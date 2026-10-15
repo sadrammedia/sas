@@ -1073,32 +1073,41 @@
         </div>        
         </div>
 
-    <!-- Bottom Navigation (Guru/Admin Mobile) -->
-    <nav class="md:hidden absolute bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 flex justify-between items-end pb-5 pt-2 px-4 shadow-[0_-15px_30px_rgba(0,0,0,0.04)] z-50 rounded-t-3xl">                
-        <button onclick="switchGuruMenu('dashboard')" class="guru-mobnav-btn flex flex-col items-center text-teal-600 w-14 group transition-transform active:scale-95" data-target="dashboard">
-            <i class="fas fa-border-all text-xl mb-1.5 drop-shadow-sm"></i>
-            <span class="text-[9px] font-bold">Beranda</span>
+    <!-- Bottom Navigation (Guru/Admin Mobile Premium) -->
+    <div class="md:hidden absolute bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 flex justify-between items-end pb-5 pt-2 px-4 shadow-[0_-15px_30px_rgba(0,0,0,0.04)] z-50 rounded-t-3xl" id="guru-bottom-nav">            
+        <button onclick="switchGuruMenu('dashboard')" id="nav-guru-dashboard" class="nav-item flex flex-col items-center relative w-14 active-nav group">
+            <div class="nav-icon-box w-10 h-10 flex items-center justify-center transition-all duration-300 group-active:scale-95 group-hover:-translate-y-1">
+                <i class="fas fa-border-all text-[20px] drop-shadow-sm"></i>
+            </div>
+            <span class="nav-text text-[9px] font-bold mt-1 transition-all duration-300">Beranda</span>
         </button>
-        
-        <button onclick="switchGuruMenu('siswa')" class="guru-mobnav-btn flex flex-col items-center text-gray-400 w-14 group transition-transform active:scale-95" data-target="siswa">
-            <i class="fas fa-user-graduate text-xl mb-1.5 drop-shadow-sm"></i>
-            <span class="text-[9px] font-bold">Siswa</span>
+
+        <button onclick="switchGuruMenu('siswa')" id="nav-guru-siswa" class="nav-item flex flex-col items-center relative w-14 group">
+            <div class="nav-icon-box w-10 h-10 flex items-center justify-center transition-all duration-300 group-active:scale-95 group-hover:-translate-y-1">
+                <i class="fas fa-user-graduate text-[20px] drop-shadow-sm"></i>
+            </div>
+            <span class="nav-text text-[9px] font-bold mt-1 transition-all duration-300">Siswa</span>
         </button>
 
         <div class="nav-fab-container">
-            <button onclick="switchGuruMenu('rekap')" class="nav-fab-btn bg-gradient-to-tr from-blue-600 to-cyan-400 shadow-[0_10px_20px_rgba(6,182,212,0.4)] hover:-translate-y-1 guru-mobnav-btn" data-target="rekap">
+            <!-- Tombol FAB Tengah untuk REKAP -->
+            <button onclick="switchGuruMenu('rekap')" id="nav-guru-rekap" class="nav-fab-btn bg-gradient-to-tr from-blue-600 to-cyan-400 shadow-[0_10px_20px_rgba(6,182,212,0.4)] hover:-translate-y-1">
                 <i class="fas fa-clipboard-check text-[26px] drop-shadow-md"></i>
             </button>
             <span class="text-[10px] font-bold text-cyan-600 mt-9 mb-1">Rekap</span>
         </div>
 
-        <button onclick="switchGuruMenu('izin-admin')" class="guru-mobnav-btn flex flex-col items-center text-gray-400 w-14 group transition-transform active:scale-95" data-target="izin-admin">
-            <i class="fas fa-envelope-open-text text-xl mb-1.5 drop-shadow-sm"></i>
-            <span class="text-[9px] font-bold">Izin</span>
+        <button onclick="switchGuruMenu('izin-admin')" id="nav-guru-izin" class="nav-item flex flex-col items-center relative w-14 group">
+            <div class="nav-icon-box w-10 h-10 flex items-center justify-center transition-all duration-300 group-active:scale-95 group-hover:-translate-y-1">
+                <i class="fas fa-envelope-open-text text-[20px] drop-shadow-sm"></i>
+            </div>
+            <span class="nav-text text-[9px] font-bold mt-1 transition-all duration-300">Izin</span>
         </button>
-        
-        <button onclick="switchGuruMenu('menu')" class="guru-mobnav-btn flex flex-col items-center text-gray-400 w-14 group transition-transform active:scale-95" data-target="menu">
-            <i class="fas fa-bars text-xl mb-1.5 drop-shadow-sm"></i>
-            <span class="text-[9px] font-bold">Menu</span>
+
+        <button onclick="switchGuruMenu('menu')" id="nav-guru-menu" class="nav-item flex flex-col items-center relative w-14 group">
+            <div class="nav-icon-box w-10 h-10 flex items-center justify-center transition-all duration-300 group-active:scale-95 group-hover:-translate-y-1">
+                <i class="fas fa-bars text-[20px] drop-shadow-sm"></i>
+            </div>
+            <span class="nav-text text-[9px] font-bold mt-1 transition-all duration-300">Menu</span>
         </button>
-    </nav>
+    </div>
