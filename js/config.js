@@ -82,20 +82,9 @@ async function showScreen(id) {
         if (id !== 'screen-splash') target.classList.add('flex');
     }
 
-    // LOGIKA PERUBAHAN FRAME (MOBILE KE DESKTOP)
-    const container = document.getElementById('app-container');
     if (id === 'screen-login') {
-        if (container) {
-            container.classList.remove('desktop-mode');
-            container.classList.add('device-frame');
-        }
         updateLoginUI();
         cekKoneksiDB();
-    } else if (id === 'screen-desktop') {
-        if (container) {
-            container.classList.remove('device-frame');
-            container.classList.add('desktop-mode');
-        }
     }
 }
 
