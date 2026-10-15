@@ -9,9 +9,6 @@ const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 let cachedPengaturan = null;
 
-// ==========================================
-// 2. FUNGSI KEAMANAN & SESI PERANGKAT
-// ==========================================
 function getDeviceID() {
     let deviceId = localStorage.getItem('app_device_id');
     if (!deviceId) {
@@ -21,9 +18,6 @@ function getDeviceID() {
     return deviceId;
 }
 
-// ==========================================
-// 3. PEMBERITAHUAN TOAST & NAVIGASI LAYAR (CSR)
-// ==========================================
 function showToast(msg, isError = false) {
     const toast = document.getElementById('toast-modal');
     document.getElementById('toast-msg').innerText = msg;
@@ -58,7 +52,7 @@ async function loadViewHTML(viewId, filePath) {
             container.innerHTML = html;
         } catch (err) {
             console.error(`Gagal memuat ${filePath}:`, err);
-            showToast(`Gagal memuat antarmuka. Pastikan jalan di Local Server.`, true);
+            showToast(`Gagal memuat antarmuka panel admin.`, true);
         }
     }
 }
@@ -67,18 +61,15 @@ async function loadViewHTML(viewId, filePath) {
 async function showScreen(id) {
     const viewMap = {
         'screen-login': 'views/login.html',
-        'screen-mobile': 'views/siswa.html',
-        'screen-scanner': 'views/scanner.html',
         'screen-desktop': 'views/guru.html'
     };
 
-    // 1. Tarik HTML jika belum ada
     if (viewMap[id]) {
         await loadViewHTML(id, viewMap[id]);
     }
 
-    // 2. Sembunyikan semua layar
-    ['screen-splash', 'screen-login', 'screen-mobile', 'screen-scanner', 'screen-desktop'].forEach(s => {
+    // Hanya merender Splash, Login, dan Layar Guru
+    ['screen-splash', 'screen-login', 'screen-desktop'].forEach(s => {
         const el = document.getElementById(s);
         if (el) {
             el.classList.add('hidden');
@@ -86,21 +77,18 @@ async function showScreen(id) {
         }
     });
 
-    // 3. Tampilkan layar target
     const target = document.getElementById(id);
     if (target) {
         target.classList.remove('hidden');
         if (id !== 'screen-splash') target.classList.add('flex');
     }
 
-    // 4. JALANKAN INISIALISASI SETELAH RENDER HTML
     if (id === 'screen-login') {
         updateLoginUI();
         cekKoneksiDB();
     }
 }
 
-// FUNGSI UPDATE UI LOGIN (Dipanggil SETELAH login.html ditarik)
 function updateLoginUI() {
     if (cachedPengaturan && cachedPengaturan.logo_sekolah_url) {
         const loginLogo = document.getElementById('login-logo-img');
@@ -117,12 +105,11 @@ function updateLoginUI() {
     }
 }
 
-// FUNGSI CEK KONEKSI (Dipanggil SETELAH login.html ditarik)
 async function cekKoneksiDB() {
     const ind = document.getElementById('db-status-indicator');
     if (!ind) return;
     try {
-        const { error } = await db.from('tabel_siswa').select('nis').limit(1);
+        const { error } = await db.from('tabel_guru').select('nip').limit(1);
         if (error) throw error;
         ind.innerHTML = '<i class="fas fa-check-circle"></i> Terhubung ke Cloud';
         ind.className = 'text-green-500 text-[11px] font-semibold text-center';
@@ -133,52 +120,15 @@ async function cekKoneksiDB() {
     }
 }
 
-// ==========================================
-// 4. HELPER JARINGAN & LOKASI
-// ==========================================
-async function getServerTime() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/`, {
-            method: 'HEAD',
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const serverDateHeader = response.headers.get('date');
-        if (serverDateHeader) return new Date(serverDateHeader);
-    } catch (e) {
-        console.warn("Gagal sinkron waktu server, menggunakan waktu lokal:", e);
-    }
-    return new Date();
-}
-
-function hitungJarakGPS(lat1, lon1, lat2, lon2) {
-    const R = 6371e3; 
-    const φ1 = lat1 * Math.PI/180;
-    const φ2 = lat2 * Math.PI/180;
-    const Δφ = (lat2-lat1) * Math.PI/180;
-    const Δλ = (lon2-lon1) * Math.PI/180;
-
-    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c; 
-}
-
 async function uploadFileToSupabase(file, bucketName, filePath) {
     if (!file) throw new Error("File tidak ditemukan");
-    const { data, error } = await db.storage.from(bucketName).upload(filePath, file, {
-        cacheControl: '3600', upsert: true
-    });
+    const { data, error } = await db.storage.from(bucketName).upload(filePath, file, { cacheControl: '3600', upsert: true });
     if (error) throw error;
     const { data: { publicUrl } } = db.storage.from(bucketName).getPublicUrl(filePath);
     return publicUrl;
 }
 
-// ==========================================
-// 5. INISIALISASI AWAL APLIKASI
-// ==========================================
 window.onload = async () => {
-    // 1. Tarik kustomisasi Tampilan Splash (Karena Splash ada di index.html)
     try {
         const { data: peng } = await db.from('tabel_pengaturan').select('*').limit(1).single();
         if (peng) {
@@ -200,27 +150,28 @@ window.onload = async () => {
                 }
             }
         }
-    } catch(e) { console.log("Gagal memuat kustomisasi landing page", e); }
+    } catch(e) { console.log("Gagal memuat kustomisasi", e); }
 
-    // 2. Cek Auto-Login
     const savedSession = localStorage.getItem('app_session');
     if (savedSession) {
         try {
             const userData = JSON.parse(savedSession);
-            currentUser = userData;
-            
-            // JIKA AUTO LOGIN, KITA HARUS MEMAINKAN AWAIT AGAR HTML DITARIK DULU
-            if (userData.role === 'siswa') {
-                await showScreen('screen-mobile');
-                if (typeof setupSiswaDashboard === 'function') setupSiswaDashboard(userData);
-            } else {
+            // Tolak akses jika siswa mencoba login dari rumah B (Aplikasi Admin)
+            if (userData.role === 'admin' || userData.role === 'guru') {
+                currentUser = userData;
                 await showScreen('screen-desktop');
                 if (typeof setupGuruDashboard === 'function') setupGuruDashboard(userData);
+                // Eksekusi Pengecekan Ultah Auto-Login
+                setTimeout(() => { if(typeof cekUlangTahun === 'function') cekUlangTahun(userData); }, 1500);
+            } else {
+                localStorage.removeItem('app_session'); 
+                showScreen('screen-login');
             }
-            
-            setTimeout(() => { if(typeof cekUlangTahun === 'function') cekUlangTahun(userData); }, 1500);
         } catch (e) {
             localStorage.removeItem('app_session');
+            showScreen('screen-login');
         }
+    } else {
+        showScreen('screen-login');
     }
 };
