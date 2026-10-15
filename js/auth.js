@@ -1,5 +1,5 @@
 // ==========================================
-// 1. SISTEM AUTENTIKASI (LOGIN & LOGOUT)
+// 1. SISTEM AUTENTIKASI (LOGIN & LOGOUT GURU/ADMIN)
 // ==========================================
 
 async function handleLogin() {
@@ -10,47 +10,17 @@ async function handleLogin() {
     const currentDeviceId = getDeviceID();
     
     if (!idInput || !passInput) {
-        errText.innerText = "ID dan Kata Sandi wajib diisi!";
+        errText.innerText = "NIP dan Kata Sandi wajib diisi!";
         errText.classList.remove('hidden');
         return;
     }
 
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengecek Cloud...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengecek Autentikasi...';
     btn.disabled = true;
     errText.classList.add('hidden');
 
     try {
-        // 1. Cek Siswa Terlebih Dahulu
-        let { data: siswa, error: errSiswa } = await db
-            .from('tabel_siswa')
-            .select('*')
-            .eq('nis', idInput)
-            .maybeSingle();
-
-        if (siswa) {
-            const pwSiswa = siswa.password || '123456';
-            if (passInput !== pwSiswa) {
-                throw new Error("Kata Sandi Salah!");
-            }
-
-            // Validasi Kunci Perangkat (Device Binding)
-            if (siswa.device_id && siswa.device_id !== currentDeviceId) {
-                throw new Error("Akun ini terikat pada HP lain. Silakan hubungi admin untuk reset perangkat.");
-            } else if (!siswa.device_id) {
-                await db.from('tabel_siswa').update({ device_id: currentDeviceId }).eq('nis', idInput);
-                siswa.device_id = currentDeviceId;
-            }
-
-            currentUser = { role: 'siswa', ...siswa };
-            localStorage.setItem('app_session', JSON.stringify(currentUser));
-
-            await showScreen('screen-mobile'); // Tarik HTML Siswa dulu!
-            setupSiswaDashboard(currentUser);  // Baru isi datanya
-            setTimeout(() => { cekUlangTahun(currentUser); }, 1500);
-            return;
-        }
-
-        // 2. Cek Guru & Admin (Semua berbasis tabel_guru)
+        // HANYA CEK TABEL GURU (Aplikasi B)
         let { data: guru, error: errGuru } = await db
             .from('tabel_guru')
             .select('*')
@@ -70,7 +40,7 @@ async function handleLogin() {
             );
             const userRole = isRoleAdmin ? 'admin' : 'guru';
 
-            // Validasi Device Binding (Opsional untuk Admin jika tidak ingin terikat 1 HP)
+            // Validasi Device Binding (Opsional untuk Admin jika tidak ingin terikat)
             if (!isRoleAdmin) {
                 if (guru.device_id && guru.device_id !== currentDeviceId) {
                     throw new Error("Akun ini aktif di perangkat lain. Minta admin untuk reset perangkat.");
@@ -83,13 +53,15 @@ async function handleLogin() {
             currentUser = { role: userRole, ...guru };
             localStorage.setItem('app_session', JSON.stringify(currentUser));
 
-            await showScreen('screen-desktop'); // Tarik HTML Guru dulu!
-            setupGuruDashboard(currentUser);    // Baru isi datanya
+            await showScreen('screen-desktop');
+            setupGuruDashboard(currentUser);
+            
+            // Panggil kejutan ultah jika hari ini ultah guru tersebut
             setTimeout(() => { cekUlangTahun(currentUser); }, 1500);
             return;
         }
 
-        throw new Error("ID Pengguna atau Kata Sandi tidak terdaftar!");
+        throw new Error("NIP Guru atau Kata Sandi tidak terdaftar!");
 
     } catch (err) {
         console.error(err);
@@ -116,13 +88,9 @@ function togglePasswordVisibility() {
 }
 
 async function handleLogout() {
-    if (currentUser) {
+    if (currentUser && (currentUser.role === 'guru' || currentUser.role === 'admin')) {
         try {
-            if (currentUser.role === 'siswa') {
-                await db.from('tabel_siswa').update({ device_id: null }).eq('nis', currentUser.nis);
-            } else if (currentUser.role === 'guru') {
-                await db.from('tabel_guru').update({ device_id: null }).eq('nip', currentUser.nip);
-            }
+            await db.from('tabel_guru').update({ device_id: null }).eq('nip', currentUser.nip);
         } catch (e) {
             console.error("Gagal melepas ikatan perangkat:", e);
         }
@@ -134,10 +102,11 @@ async function handleLogout() {
     document.getElementById('login-id').value = '';
     document.getElementById('login-pass').value = '';
     showScreen('screen-login');
-    const container = document.getElementById('app-container');
-    container.classList.remove('desktop-mode');
-    container.classList.add('device-frame');
 }
+
+// ==========================================
+// 2. FUNGSI ADMIN (RESET PASSWORD & DEVICE)
+// ==========================================
 
 async function resetDeviceBinding(tabel, kolomId, nilaiId) {
     if (!confirm(`Yakin ingin me-reset (menghapus) ikatan perangkat untuk ID ${nilaiId}?\n\nPengguna akan bisa login kembali di perangkat mana pun.`)) {
@@ -164,7 +133,6 @@ async function resetDeviceBinding(tabel, kolomId, nilaiId) {
     }
 }
 
-// Fungsi untuk Reset Password Siswa oleh Admin
 async function resetPasswordSiswa(nis, nama) {
     if (!confirm(`Yakin ingin me-reset kata sandi untuk siswa:\nNama: ${nama}\nNIS: ${nis} ?\n\nKata sandi akan dikembalikan ke bawaan sistem (123456).`)) {
         return;
@@ -178,9 +146,7 @@ async function resetPasswordSiswa(nis, nama) {
             .eq('nis', nis);
             
         if (error) throw error;
-        
         showToast(`Sandi ${nama} berhasil di-reset ke 123456!`);
-        
     } catch (error) {
         console.error("Detail Error Reset Pass:", error);
         let errMsg = "Gagal me-reset kata sandi.";
@@ -192,15 +158,14 @@ async function resetPasswordSiswa(nis, nama) {
 }
 
 // ==========================================
-// FITUR UCAPAN ULANG TAHUN
+// 3. FITUR UCAPAN ULANG TAHUN GURU/ADMIN
 // ==========================================
+
 async function cekUlangTahun(user) {
-    // 1. Cek apakah fitur diaktifkan oleh Admin
     if (typeof cachedPengaturan !== 'undefined' && cachedPengaturan && cachedPengaturan.fitur_ultah_aktif === false) {
         return; 
     }
 
-    // 2. Validasi Tanggal Lahir Siswa
     if (!user || !user.tgl_lahir) return; 
     const tglLahirDB = user.tgl_lahir;
     if (tglLahirDB.length < 10) return;
@@ -211,38 +176,26 @@ async function cekUlangTahun(user) {
     const bulanIni = String(hariIni.getMonth() + 1).padStart(2, '0');
     const tanggalIni = String(hariIni.getDate()).padStart(2, '0');
 
-    // 3. Jika hari ini Ulang Tahun
     if (bulanLahir === bulanIni && tanggalLahir === tanggalIni) {
-        // Tampilkan nama pendek siswa
         document.getElementById('ultah-nama').innerText = user.nama.split(',')[0]; 
-        
         const isPerempuan = (user.jk === 'P' || user.jk === 'Perempuan');
         
         if (typeof cachedPengaturan !== 'undefined' && cachedPengaturan) {
             try {
-                // Tentukan ID Template mana yang harus ditarik (L atau P)
                 const templateAktifId = isPerempuan ? cachedPengaturan.template_p : cachedPengaturan.template_l;
-
                 if (templateAktifId) {
-                    // Tarik data template spesifik dari tabel_template_ultah berdasarkan ID
                     const { data: tplData, error } = await db.from('tabel_template_ultah').select('*').eq('id', templateAktifId).single();
-                    
                     if (tplData && !error) {
-                        // Terapkan data dari Bank Template ke UI Modal
                         document.getElementById('ultah-pesan').innerHTML = tplData.pesan_utama || '';
-                        
                         if (tplData.pesan_kutipan) {
                             document.getElementById('ultah-kutipan').innerHTML = `"${tplData.pesan_kutipan}"`;
                             document.getElementById('ultah-kutipan').style.display = 'block';
                         } else {
                             document.getElementById('ultah-kutipan').style.display = 'none';
                         }
-                        
                         if (tplData.bg_url) {
                             document.getElementById('ultah-gambar').src = tplData.bg_url;
                         }
-
-                        // JIKA BERHASIL MEMUAT TEMPLATE, TAMPILKAN MODAL LALU HENTIKAN FUNGSI DI SINI.
                         tampilkanModalUI();
                         return; 
                     }
@@ -251,57 +204,41 @@ async function cekUlangTahun(user) {
                 console.error("Gagal menarik template ulang tahun dari database:", err);
             }
             
-            // ==========================================
-            // KODE CADANGAN (FALLBACK) - HANYA BERJALAN JIKA:
-            // 1. Admin belum memilih template sama sekali di pengaturan. ATAU
-            // 2. Koneksi ke tabel_template_ultah gagal/error.
-            // ==========================================
-            console.log("Menggunakan template cadangan...");
-            
+            // Fallback jika tidak ada template
             if (isPerempuan) {
-                document.getElementById('ultah-pesan').innerHTML = "Semoga di hari yang istimewa ini, langkahmu selalu diberkahi, dan kebahagiaan menyertaimu.";
-                document.getElementById('ultah-kutipan').innerHTML = `"Jadi versi terbaik dari dirimu" 🤍`;
+                document.getElementById('ultah-pesan').innerHTML = "Semoga di hari yang istimewa ini, langkah Anda selalu diberkahi, dan kebahagiaan menyertai.";
+                document.getElementById('ultah-kutipan').innerHTML = `"Tetaplah menginspirasi!" 🤍`;
                 document.getElementById('ultah-gambar').src = "https://placehold.co/600x800/ffecf2/ff6b9d.png?text=Selamat+Ulang+Tahun"; 
             } else {
-                document.getElementById('ultah-pesan').innerHTML = "Selamat ulang tahun! Jadikan usia barumu ini sebagai momentum untuk terus berkembang, lebih tangguh, dan meraih semua target hebatmu ke depan. Semangat terus belajarnya!";
-                document.getElementById('ultah-kutipan').innerHTML = `"Keep moving forward!" 🚀`;
+                document.getElementById('ultah-pesan').innerHTML = "Selamat ulang tahun! Terima kasih atas dedikasi luar biasa Anda untuk sekolah kita tercinta.";
+                document.getElementById('ultah-kutipan').innerHTML = `"Sukses dan sehat selalu!" 🚀`;
                 document.getElementById('ultah-gambar').src = "https://placehold.co/600x800/e0f2fe/0ea5e9.png?text=Selamat+Ulang+Tahun";
             }
-            
-            // Tampilkan Modal dengan data cadangan
             tampilkanModalUI();
         }
     }
 }
 
-// Fungsi pembantu untuk animasi modal
 function tampilkanModalUI() {
     const modal = document.getElementById('modal-ultah');
     const content = document.getElementById('modal-ultah-content');
-    
     if(modal && content) {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        
         setTimeout(() => {
             content.classList.remove('scale-95', 'opacity-0');
             content.classList.add('scale-100', 'opacity-100');
         }, 50);
-        
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
     }
 }
-
 
 function tutupModalUltah() {
     const modal = document.getElementById('modal-ultah');
     const content = document.getElementById('modal-ultah-content');
-    
     if(content) {
         content.classList.remove('scale-100');
         content.classList.add('scale-95');
     }
-    
     if(modal) {
         setTimeout(() => {
             modal.classList.add('hidden');
