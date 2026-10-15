@@ -1,0 +1,1104 @@
+<!-- Sidebar Desktop -->
+<div class="w-64 bg-white border-r border-gray-200 flex-col hidden md:flex h-full shadow-sm z-20">
+    <div class="p-6 flex items-center gap-3 border-b border-gray-50">
+        <div class="w-10 h-10 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center font-bold text-xl"><i class="fas fa-cloud"></i></div>
+        <div>
+            <h2 class="font-bold text-gray-800 text-sm leading-tight">Presensi Cloud</h2>
+            <p class="text-[10px] text-teal-600 font-bold">Supabase Database</p>
+        </div>
+    </div>
+    
+    <div class="flex flex-col items-center py-6 px-4 border-b border-gray-50 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-full mb-3 flex items-center justify-center border-2 border-teal-500 overflow-hidden relative">
+            <img id="guru-foto-side" src="" onerror="this.style.display='none'; document.getElementById('guru-icon-side').style.display='block';" class="absolute inset-0 w-full h-full object-cover z-10 hidden">
+            <i id="guru-icon-side" class="fas fa-user-tie text-2xl text-gray-600"></i>
+        </div>
+        <h3 id="guru-name-side" class="font-bold text-gray-800 text-sm truncate w-full">Nama Guru</h3>
+        <p id="guru-nip-side" class="text-[11px] text-gray-500">NIP: 123</p>
+        <span id="badge-wali-kelas" class="mt-2 bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-yellow-200 hidden">Wali Kelas</span>
+    </div>
+
+    <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto custom-scroll">
+        <button onclick="switchGuruMenu('dashboard')" class="guru-nav-btn w-full flex items-center gap-3 px-4 py-3 bg-teal-50 text-teal-700 rounded-xl text-sm font-medium transition-all" data-target="dashboard">
+            <i class="fas fa-border-all w-5"></i> Dashboard
+        </button>
+        <button onclick="switchGuruMenu('siswa')" class="guru-nav-btn w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="siswa">
+            <i class="fas fa-user-graduate w-5"></i> Data Siswa
+        </button>
+        <button onclick="switchGuruMenu('guru')" class="guru-nav-btn admin-only w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="guru">
+            <i class="fas fa-chalkboard-teacher w-5"></i> Data Guru
+        </button>
+        <button onclick="switchGuruMenu('rekap')" class="guru-nav-btn w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="rekap">
+            <i class="fas fa-clipboard-list w-5"></i> Rekap Presensi
+        </button>
+        <button onclick="switchGuruMenu('izin-admin')" class="guru-nav-btn w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="izin-admin">
+            <i class="fas fa-envelope-open-text w-5"></i> Pengajuan Izin
+        </button>
+        <button onclick="switchGuruMenu('pengumuman-admin')" class="guru-nav-btn w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="pengumuman-admin">
+            <i class="fas fa-bullhorn w-5"></i> Pengumuman
+        </button>
+        <button onclick="switchGuruMenu('jadwal-admin')" class="guru-nav-btn w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="jadwal-admin">
+            <i class="fas fa-calendar-alt w-5"></i> Jadwal Pelajaran
+        </button>
+        <button onclick="switchGuruMenu('manajemen')" class="guru-nav-btn admin-only w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="manajemen">
+            <i class="fas fa-database w-5"></i> Kelola Data
+        </button>
+        <button onclick="switchGuruMenu('pengaturan')" class="guru-nav-btn admin-only w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="pengaturan">
+            <i class="fas fa-cog w-5"></i> Pengaturan
+        </button>
+        <button onclick="switchGuruMenu('profil-guru')" class="guru-nav-btn w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-800 rounded-xl text-sm font-medium transition-all" data-target="profil-guru">
+            <i class="fas fa-user-circle w-5"></i> Akun Saya
+        </button>
+    </nav>
+
+    <div class="p-4 border-t border-gray-100">
+        <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 py-2.5 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors">
+            <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+    </div>
+</div>
+
+<!-- Main Content Area (Guru) -->
+<div class="flex-1 flex flex-col h-full bg-gray-50 w-full relative">
+    <div class="md:hidden bg-white px-4 pt-3.5 pb-2.5 shadow-sm flex justify-between items-center z-10 sticky top-0 shrink-0 border-b border-gray-100" id="header-mobile-guru">
+        <div>
+            <h2 class="font-extrabold text-sm text-gray-800 tracking-tight leading-tight">Panel Admin</h2>
+            <p id="guru-name-mob" class="text-[9px] text-teal-600 font-bold flex items-center gap-1 mt-0.5">
+                <i class="fas fa-circle text-[5px] animate-pulse"></i> Supabase Connected
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+                <button type="button" onclick="window.toggleDarkModeGuruQuick()" class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 active:scale-95 transition-all border border-indigo-100/70 shadow-sm cursor-pointer select-none" title="Beralih Tema">
+                    <i class="fas fa-moon text-xs pointer-events-none" id="icon-dark-guru-quick"></i>
+                </button>
+                <button type="button" onclick="switchGuruMenu('profil-guru')" class="w-8 h-8 rounded-xl bg-gray-50 text-gray-600 flex items-center justify-center overflow-hidden border border-gray-200 shadow-sm active:scale-95 transition-transform relative">
+                    <img id="guru-foto-topmob" src="" onerror="this.style.display='none'; document.getElementById('guru-icon-topmob').style.display='block';" class="absolute inset-0 w-full h-full object-cover z-10 hidden">
+                    <i id="guru-icon-topmob" class="fas fa-user text-xs"></i>
+                </button>
+                <button type="button" onclick="handleLogout()" class="w-8 h-8 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center border border-red-100 shadow-sm active:scale-95 transition-transform" title="Keluar">
+                    <i class="fas fa-sign-out-alt text-xs"></i>
+                </button>
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8">
+        <!-- GURU: DASHBOARD -->
+        <div id="guru-section-dashboard" class="guru-section animate-fade-in block">
+            <div class="flex justify-between items-start mb-5 px-1 mt-2">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-gray-800 tracking-tight" id="dash-guru-greeting">Selamat Pagi!</h2>
+                    <p class="text-[11px] md:text-xs text-gray-500 font-medium mt-1 italic" id="dash-guru-quote">"Memuat kata mutiara..."</p>
+                </div>
+                <button type="button" onclick="loadDashboardGuruData()" class="h-8 px-3 bg-white border border-gray-200 rounded-xl text-[10px] font-bold text-gray-600 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 active:scale-95 flex items-center gap-1.5 shadow-sm transition-all shrink-0">
+                    <i class="fas fa-sync-alt text-[10px]" id="icon-spin-refresh"></i> Refresh
+                </button>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl p-4 text-white shadow-md mb-5 relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-4 -bottom-4 w-24 h-24 bg-indigo-400/20 rounded-full blur-xl pointer-events-none"></div>
+                
+                <div class="flex justify-between items-center mb-3 relative z-10">
+                    <h3 class="font-bold text-sm flex items-center gap-2"><i class="fas fa-calendar-day text-purple-200"></i> Jadwal Mengajar Anda Hari Ini</h3>
+                    <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-semibold border border-white/20 backdrop-blur-sm" id="dash-badge-hari">Hari Ini</span>
+                </div>
+                <div id="widget-jadwal-guru" class="space-y-2 relative z-10">
+                    <p class="text-xs text-purple-100 py-2"><i class="fas fa-spinner fa-spin"></i> Mencari jadwal mengajar Anda...</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 mb-4">
+                <div class="stat-card-guru relative overflow-hidden rounded-2xl p-3 bg-gradient-to-br from-blue-50 via-sky-50/70 to-indigo-100/50 border border-blue-200/60 shadow-sm flex flex-col justify-between min-h-[92px]">
+                    <i class="fas fa-user-graduate absolute -right-2 -bottom-2 text-4xl text-blue-500/10 pointer-events-none"></i>
+                    <div class="flex items-center justify-between relative z-10 mb-1">
+                        <span class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-sm">
+                            <i class="fas fa-users"></i>
+                        </span>
+                        <span class="text-[9px] font-extrabold text-blue-700 bg-white/80 px-1.5 py-0.5 rounded-md border border-blue-200/50">Siswa</span>
+                    </div>
+                    <div class="relative z-10 mt-1">
+                        <span class="font-mono font-extrabold text-xl text-blue-950 leading-none block" id="stat-total-siswa">0</span>
+                        <span class="text-[9px] text-blue-700/80 font-semibold block mt-1 truncate">Terdaftar (Akses)</span>
+                    </div>
+                </div>
+
+                <div class="stat-card-guru relative overflow-hidden rounded-2xl p-3 bg-gradient-to-br from-amber-50 via-orange-50/70 to-amber-100/50 border border-amber-200/60 shadow-sm flex flex-col justify-between min-h-[92px]">
+                    <i class="fas fa-chalkboard-teacher absolute -right-2 -bottom-2 text-4xl text-amber-500/10 pointer-events-none"></i>
+                    <div class="flex items-center justify-between relative z-10 mb-1">
+                        <span class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-[10px] shadow-sm">
+                            <i class="fas fa-user-tie"></i>
+                        </span>
+                        <span class="text-[9px] font-extrabold text-amber-700 bg-white/80 px-1.5 py-0.5 rounded-md border border-amber-200/50">Guru</span>
+                    </div>
+                    <div class="relative z-10 mt-1">
+                        <span class="font-mono font-extrabold text-xl text-amber-950 leading-none block" id="stat-total-guru">0</span>
+                        <span class="text-[9px] text-amber-700/80 font-semibold block mt-1 truncate">Database Cloud</span>
+                    </div>
+                </div>
+
+                <div class="stat-card-guru relative overflow-hidden rounded-2xl p-3 bg-gradient-to-br from-emerald-50 via-teal-50/70 to-emerald-100/50 border border-emerald-200/60 shadow-sm flex flex-col justify-between min-h-[92px]">
+                    <i class="fas fa-check-circle absolute -right-2 -bottom-2 text-4xl text-emerald-500/10 pointer-events-none"></i>
+                    <div class="flex items-center justify-between relative z-10 mb-1">
+                        <span class="w-6 h-6 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-[10px] shadow-sm">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </span>
+                        <span id="stat-persen-hadir" class="text-[9px] font-extrabold text-emerald-700 bg-white/80 px-1.5 py-0.5 rounded-md border border-emerald-200/50">Masuk</span>
+                    </div>
+                    <div class="relative z-10 mt-1">
+                        <span class="font-mono font-extrabold text-xl text-emerald-950 leading-none block" id="stat-hadir">0</span>
+                        <span class="text-[9px] text-emerald-700/80 font-semibold block mt-1 truncate">Hadir Hari Ini</span>
+                    </div>
+                </div>
+
+                <div class="stat-card-guru relative overflow-hidden rounded-2xl p-3 bg-gradient-to-br from-purple-50 via-fuchsia-50/70 to-purple-100/50 border border-purple-200/60 shadow-sm flex flex-col justify-between min-h-[92px]">
+                    <i class="fas fa-door-open absolute -right-2 -bottom-2 text-4xl text-purple-500/10 pointer-events-none"></i>
+                    <div class="flex items-center justify-between relative z-10 mb-1">
+                        <span class="w-6 h-6 rounded-lg bg-purple-600 text-white flex items-center justify-center text-[10px] shadow-sm">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </span>
+                        <span class="text-[9px] font-extrabold text-purple-700 bg-white/80 px-1.5 py-0.5 rounded-md border border-purple-200/50">Pulang</span>
+                    </div>
+                    <div class="relative z-10 mt-1">
+                        <span class="font-mono font-extrabold text-xl text-purple-950 leading-none block" id="stat-pulang">0</span>
+                        <span class="text-[9px] text-purple-700/80 font-semibold block mt-1 truncate">Terekam Pulang</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-[11px] text-blue-700 hidden mb-4" id="banner-role-guru">
+                <i class="fas fa-info-circle mr-1"></i> Data difilter berdasarkan Kelas Ajar / Wali Kelas Anda.
+            </div>
+
+            <div class="space-y-4">
+                <div onclick="switchGuruMenu('izin-admin')" class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-4 text-white shadow-[0_4px_15px_rgba(245,158,11,0.3)] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-white/20 rounded-full blur-lg"></div>
+                    <div class="flex items-center gap-4 relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg shadow-sm border border-white/20">
+                            <i class="fas fa-envelope-open-text"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm leading-tight">Pengajuan Izin & Klaim</h4>
+                            <p class="text-[10px] text-amber-100 mt-0.5">Tinjau permohonan siswa</p>
+                        </div>
+                    </div>
+                    <div id="badge-izin-pending-wrap" class="relative z-10 hidden">
+                        <span class="bg-red-500 text-white border-2 border-orange-400 font-extrabold text-[11px] px-2.5 py-1 rounded-full shadow-md animate-pulse flex items-center gap-1">
+                            <span id="badge-izin-pending">0</span> Menunggu
+                        </span>
+                    </div>
+                    <span id="icon-izin-arrow" class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px] relative z-10">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                </div>
+
+                <div class="bg-white rounded-3xl p-4 shadow-sm border border-gray-100" id="card-recent-activity">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xs">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h4 class="font-extrabold text-sm text-slate-800">Aktivitas Presensi Live</h4>
+                        </div>
+                        <button onclick="switchGuruMenu('rekap')" class="text-[10px] font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-lg hover:bg-teal-100 transition-colors">
+                            Rekap Lengkap
+                        </button>
+                    </div>
+                    <div id="live-recent-absen-list" class="space-y-3">
+                        <p class="text-center text-xs text-gray-400 py-6">Memantau aktivitas gerbang...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GURU: DATA SISWA -->
+        <div id="guru-section-siswa" class="guru-section hidden animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Data Siswa</h1>
+                    <p id="counter-siswa" class="text-xs text-gray-500 font-medium">Memuat data...</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadDataSiswa(true)" class="text-teal-600 text-xs font-semibold border border-teal-200 px-3 py-2 rounded-xl bg-teal-50 shadow-sm hover:bg-teal-100 flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-sync-alt"></i> Muat Ulang
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-4 space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                    <div class="md:col-span-2 relative">
+                        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" id="filter-siswa-keyword" oninput="applyFilterSiswa()" placeholder="Cari Nama, NIS, atau NISN..." class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-teal-500 bg-gray-50/50 focus:bg-white transition-all">
+                    </div>
+                    <div>
+                        <select id="filter-siswa-kelas" onchange="applyFilterSiswa()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="ALL">Semua Kelas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="filter-siswa-device" onchange="applyFilterSiswa()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="ALL">Semua Status HP</option>
+                            <option value="bound">Terikat</option>
+                            <option value="free">Bebas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="sort-siswa-by" onchange="applyFilterSiswa()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="nis_asc">Urut NIS (Kecil - Besar)</option>
+                            <option value="nis_desc">Urut NIS (Besar - Kecil)</option>
+                            <option value="nama_asc">Nama (A - Z)</option>
+                            <option value="nama_desc">Nama (Z - A)</option>
+                            <option value="kelas_asc">Kelas (A - Z)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto custom-scroll max-h-[60vh]">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-4">NISN</th>
+                                <th class="px-6 py-4">NIS</th>
+                                <th class="px-6 py-4">Nama Lengkap</th>
+                                <th class="px-6 py-4">L/P</th>
+                                <th class="px-6 py-4">Tingkat</th>
+                                <th class="px-6 py-4">Kelas</th>
+                                <th class="px-6 py-4">Jurusan</th>
+                                <th class="px-6 py-4">No. HP</th>
+                                <th class="px-6 py-4">Status HP</th>
+                                <th class="px-6 py-4 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100" id="tabel-data-siswa">
+                            <tr><td colspan="10" class="text-center p-8 text-gray-400">Tekan "Muat Ulang" untuk menarik data dari database.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- GURU: DATA GURU -->
+        <div id="guru-section-guru" class="guru-section hidden animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Data Guru (Cloud)</h1>
+                    <p id="counter-guru" class="text-xs text-gray-500 font-medium">Memuat data...</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadDataGuru(true)" class="text-orange-600 text-xs font-semibold border border-orange-200 px-3 py-2 rounded-xl bg-orange-50 shadow-sm hover:bg-orange-100 flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-sync-alt"></i> Muat Ulang
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-4 space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                    <div class="md:col-span-2 relative">
+                        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" id="filter-guru-keyword" oninput="applyFilterGuru()" placeholder="Cari Nama atau NIP Guru..." class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-orange-500 bg-gray-50/50 focus:bg-white transition-all">
+                    </div>
+                    <div>
+                        <select id="filter-guru-jabatan" onchange="applyFilterGuru()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-orange-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="ALL">Semua Jabatan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="filter-guru-walikelas" onchange="applyFilterGuru()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-orange-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="ALL">Semua Guru</option>
+                            <option value="wali">Khusus Wali Kelas</option>
+                            <option value="non_wali">Bukan Wali Kelas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="sort-guru-by" onchange="applyFilterGuru()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-orange-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="nama_asc">Nama (A - Z)</option>
+                            <option value="nama_desc">Nama (Z - A)</option>
+                            <option value="nip_asc">Urut NIP (Kecil - Besar)</option>
+                            <option value="nip_desc">Urut NIP (Besar - Kecil)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto custom-scroll max-h-[60vh]">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-4">NIP</th>
+                                <th class="px-6 py-4">Nama Lengkap</th>
+                                <th class="px-6 py-4">Jabatan</th>
+                                <th class="px-6 py-4">Wali Kelas</th>
+                                <th class="px-6 py-4">Kelas yang Diajarkan</th>
+                                <th class="px-6 py-4">Status HP</th>
+                                <th class="px-6 py-4 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100" id="tabel-data-guru">
+                            <tr><td colspan="7" class="text-center p-8 text-gray-400">Tekan "Muat Ulang" untuk menarik data dari database.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+
+        <!-- GURU: PENGAJUAN IZIN -->
+        <div id="guru-section-izin-admin" class="guru-section hidden animate-fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Pengajuan Izin / Sakit</h1>
+                <button onclick="loadIzinAdmin()" class="text-teal-600 text-sm border border-teal-200 px-3 py-1 rounded-lg bg-teal-50 shadow-sm hover:bg-teal-100"><i class="fas fa-sync-alt"></i> Muat Ulang</button>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto custom-scroll max-h-[60vh]">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200 sticky top-0">
+                            <tr>
+                                <th class="px-6 py-4">Tanggal</th>
+                                <th class="px-6 py-4">Nama Siswa</th>
+                                <th class="px-6 py-4">Jenis</th>
+                                <th class="px-6 py-4">Keterangan & Lampiran</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100" id="tabel-data-izin-admin">
+                            <tr><td colspan="6" class="text-center p-8 text-gray-400">Tekan "Muat Ulang" untuk menarik data dari database.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- GURU: KELOLA PENGUMUMAN SEKOLAH -->
+        <div id="guru-section-pengumuman-admin" class="guru-section hidden animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Kelola Pengumuman Sekolah</h1>
+                    <p class="text-xs text-gray-500 font-medium">Buat informasi yang langsung tampil di dashboard siswa</p>
+                </div>
+                <button onclick="loadPengumumanAdmin()" class="text-teal-600 text-xs font-semibold border border-teal-200 px-3 py-2 rounded-xl bg-teal-50 shadow-sm hover:bg-teal-100 flex items-center gap-1.5 transition-colors">
+                    <i class="fas fa-sync-alt"></i> Muat Ulang
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Form Tambah Pengumuman Baru -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-fit">
+                    <h3 class="font-bold text-gray-800 text-base mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-teal-600"></i> Buat Pengumuman Baru
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Judul Pengumuman</label>
+                            <input type="text" id="admin-pengumuman-judul" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-500 bg-gray-50/50" placeholder="Contoh: Upacara Peringatan Hari Pahlawan">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Kategori</label>
+                                <select id="admin-pengumuman-kategori" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium">
+                                    <option value="Informasi">Informasi</option>
+                                    <option value="Penting">Penting</option>
+                                    <option value="Kegiatan">Kegiatan</option>
+                                    <option value="Akademik">Akademik</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Target Siswa</label>
+                                <input type="text" id="admin-pengumuman-target" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-teal-500 bg-gray-50/50" placeholder="ALL atau kelas misal XII-PF 1" value="ALL">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Isi Pengumuman</label>
+                            <textarea id="admin-pengumuman-isi" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-500 bg-gray-50/50" placeholder="Tulis rincian pesan untuk siswa di sini..."></textarea>
+                        </div>
+                        <button id="btn-tambah-pengumuman" onclick="tambahPengumumanBaru()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2 text-xs">
+                            <i class="fas fa-paper-plane"></i> Publikasikan Pengumuman
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabel Daftar Pengumuman Aktif -->
+                <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-50">
+                        <h3 class="font-bold text-gray-800 text-base flex items-center gap-2">
+                            <i class="fas fa-list-alt text-teal-600"></i> Daftar Pengumuman di Database
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto custom-scroll max-h-[65vh]">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200 sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-4">Kategori</th>
+                                    <th class="px-6 py-4">Judul & Isi</th>
+                                    <th class="px-6 py-4">Target</th>
+                                    <th class="px-6 py-4">Penulis</th>
+                                    <th class="px-6 py-4 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100" id="tabel-data-pengumuman-admin">
+                                <tr><td colspan="5" class="text-center p-8 text-gray-400">Tekan "Muat Ulang" untuk melihat daftar pengumuman.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GURU: KELOLA JADWAL PELAJARAN -->
+        <div id="guru-section-jadwal-admin" class="guru-section hidden animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Kelola Jadwal Pelajaran</h1>
+                    <p class="text-xs text-gray-500 font-medium">Atur dan pantau jadwal kegiatan belajar mengajar per kelas</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadJadwalAdmin(true)" class="text-purple-600 text-xs font-semibold border border-purple-200 px-3 py-2 rounded-xl bg-purple-50 shadow-sm hover:bg-purple-100 flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-sync-alt"></i> Muat Ulang
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Form Tambah Jadwal Manual -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-fit">
+                    <h3 class="font-bold text-gray-800 text-base mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-purple-600"></i> Tambah Jadwal Manual
+                    </h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Hari</label>
+                            <select id="form-jadwal-hari" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-purple-500 bg-gray-50/50 font-medium">
+                                <option value="Senin">Senin</option>
+                                <option value="Selasa">Selasa</option>
+                                <option value="Rabu">Rabu</option>
+                                <option value="Kamis">Kamis</option>
+                                <option value="Jumat">Jumat</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Jam Mulai</label>
+                                <input type="time" id="form-jadwal-mulai" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-purple-500 bg-gray-50/50 font-semibold" value="07:15">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Jam Selesai</label>
+                                <input type="time" id="form-jadwal-selesai" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-purple-500 bg-gray-50/50 font-semibold" value="09:00">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Mata Pelajaran</label>
+                            <div class="flex gap-2">
+                                <select id="form-jadwal-mapel" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-purple-500 bg-gray-50/50">
+                                    <option value="">Pilih Mapel...</option>
+                                </select>
+                                <button onclick="promptTambahMapel()" class="bg-purple-50 text-purple-600 px-3 py-2 rounded-xl text-xs font-bold hover:bg-purple-100 transition-colors shadow-sm" title="Tambah Mapel Baru"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Guru Pengajar</label>
+                            <select id="form-jadwal-guru" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-purple-500 bg-gray-50/50">
+                                <option value="">Pilih Guru Pengajar...</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Kelas Target</label>
+                                <select id="form-jadwal-kelas" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-purple-500 bg-gray-50/50 font-semibold">
+                                    <option value="">Pilih Kelas...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Ruangan / Lab</label>
+                                <input type="text" id="form-jadwal-ruang" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-purple-500 bg-gray-50/50" placeholder="Contoh: Lab 1" value="Kelas">
+                            </div>
+                        </div>
+                        <button id="btn-tambah-jadwal" onclick="tambahJadwalBaru()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2 text-xs mt-2">
+                            <i class="fas fa-save"></i> Simpan Jadwal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter & Tabel Daftar Jadwal -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500 mb-1">Filter Kelas</label>
+                                <select id="filter-jadwal-kelas" onchange="applyFilterJadwal()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-purple-500 bg-gray-50/50 font-medium text-gray-700">
+                                    <option value="ALL">Semua Kelas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500 mb-1">Filter Hari</label>
+                                <select id="filter-jadwal-hari" onchange="applyFilterJadwal()" class="w-full py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-purple-500 bg-gray-50/50 font-medium text-gray-700">
+                                    <option value="ALL">Semua Hari</option>
+                                    <option value="Senin">Senin</option>
+                                    <option value="Selasa">Selasa</option>
+                                    <option value="Rabu">Rabu</option>
+                                    <option value="Kamis">Kamis</option>
+                                    <option value="Jumat">Jumat</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-5 border-b border-gray-50 flex justify-between items-center">
+                            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                                <i class="fas fa-list-alt text-purple-600"></i> Daftar Jadwal Tersimpan
+                            </h3>
+                            <span id="counter-jadwal-admin" class="text-xs text-gray-400 font-medium">0 jadwal</span>
+                        </div>
+                        <div class="overflow-x-auto custom-scroll max-h-[60vh]">
+                            <table class="w-full text-left text-sm whitespace-nowrap">
+                                <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200 sticky top-0 z-10">
+                                    <tr>
+                                        <th class="px-5 py-3.5">Hari & Jam</th>
+                                        <th class="px-5 py-3.5">Mata Pelajaran</th>
+                                        <th class="px-5 py-3.5">Guru</th>
+                                        <th class="px-5 py-3.5">Kelas</th>
+                                        <th class="px-5 py-3.5">Ruang</th>
+                                        <th class="px-5 py-3.5 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100" id="tabel-data-jadwal-admin">
+                                    <tr><td colspan="6" class="text-center p-8 text-gray-400">Tekan "Muat Ulang" untuk melihat jadwal.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GURU: REKAP PRESENSI -->
+        <div id="guru-section-rekap" class="guru-section hidden animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Rekapitulasi Presensi</h1>
+                    <p id="rekap-subtext" class="text-xs text-gray-500 font-medium">Laporan kehadiran siswa terhubung Cloud</p>
+                </div>
+                <div class="flex flex-wrap gap-2 items-center w-full md:w-auto">
+                    <button onclick="loadDataRekap(true)" class="bg-white border border-gray-200 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors shadow-sm text-xs font-bold flex items-center gap-1.5">
+                        <i class="fas fa-sync-alt"></i> Segarkan
+                    </button>
+                    <button onclick="exportRekapHandler('excel')" class="bg-green-600 hover:bg-green-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    <button onclick="exportRekapHandler('pdf')" class="bg-red-500 hover:bg-red-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-4 border-b border-gray-200 pb-2">
+                <button id="btn-tab-mode-log" onclick="switchRekapViewMode('log')" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 text-white shadow-sm transition-all flex items-center gap-2">
+                    <i class="fas fa-list"></i> Log Presensi Harian
+                </button>
+                <button id="btn-tab-mode-akumulasi" onclick="switchRekapViewMode('akumulasi')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-gray-600 hover:bg-gray-100 border border-gray-200 transition-all flex items-center gap-2">
+                    <i class="fas fa-chart-pie"></i> Rekap Akumulasi Kehadiran (H / S / I)
+                </button>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-4 space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 mb-1">Rombel / Kelas</label>
+                        <select id="filter-kelas-rekap" onchange="loadDataRekap()" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="ALL">Semua Kelas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 mb-1">Periode Waktu</label>
+                        <select id="filter-periode-rekap" onchange="handlePeriodeChange()" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium text-gray-700">
+                            <option value="hari_ini">Hari Ini</option>
+                            <option value="minggu_ini">Minggu Ini</option>
+                            <option value="bulan_ini" selected>Bulan Ini</option>
+                            <option value="kustom">Rentang Tanggal Khusus</option>
+                        </select>
+                    </div>
+                    <div id="wrapper-tgl-mulai" class="hidden">
+                        <label class="block text-[11px] font-bold text-gray-500 mb-1">Dari Tanggal</label>
+                        <input type="date" id="filter-rekap-start" onchange="loadDataRekap()" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium text-gray-700">
+                    </div>
+                    <div id="wrapper-tgl-selesai" class="hidden">
+                        <label class="block text-[11px] font-bold text-gray-500 mb-1">Sampai Tanggal</label>
+                        <input type="date" id="filter-rekap-end" onchange="loadDataRekap()" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-teal-500 bg-gray-50/50 font-medium text-gray-700">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 1. Log Harian -->
+            <div id="view-rekap-log" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto custom-scroll max-h-[60vh]">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-4">Tanggal</th>
+                                <th class="px-6 py-4">NIS</th>
+                                <th class="px-6 py-4">Nama Siswa</th>
+                                <th class="px-6 py-4">Kelas</th>
+                                <th class="px-6 py-4">Waktu Masuk</th>
+                                <th class="px-6 py-4">Waktu Pulang</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100" id="tabel-rekap-presensi">
+                            <tr><td colspan="6" class="text-center p-8 text-gray-400">Tekan "Segarkan" untuk menarik data absen terbaru.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 2. Akumulasi Lengkap -->
+            <div id="view-rekap-akumulasi" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto custom-scroll max-h-[60vh]">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-6 py-4">NIS</th>
+                                <th class="px-6 py-4">Nama Siswa</th>
+                                <th class="px-6 py-4">Kelas</th>
+                                <th class="px-4 py-4 text-center text-green-700 bg-green-50/50">Hadir (H)</th>
+                                <th class="px-4 py-4 text-center text-amber-700 bg-amber-50/50">Sakit (S)</th>
+                                <th class="px-4 py-4 text-center text-blue-700 bg-blue-50/50">Izin (I)</th>
+                                <th class="px-4 py-4 text-center text-rose-700 bg-rose-50/50">Alpa (A)</th>
+                                <th class="px-4 py-4 text-center text-teal-700 bg-teal-50/50">Hari Efektif</th>
+                                <th class="px-6 py-4 text-center font-bold">Persentase</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100" id="tabel-rekap-akumulasi">
+                            <tr><td colspan="9" class="text-center p-8 text-gray-400">Pilih kelas dan periode untuk memuat akumulasi.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- GURU: KELOLA DATA IMPORT -->
+        <div id="guru-section-manajemen" class="guru-section hidden animate-fade-in">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Kelola Database Cloud</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-50">
+                        <h3 class="font-bold text-gray-800 text-lg"><i class="fas fa-cloud-upload-alt text-teal-600 mr-2"></i> Import ke Supabase</h3>
+                        <p class="text-xs text-gray-500 mt-1">Unggah file Excel untuk mengirim data massal ke cloud.</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 flex flex-col items-center justify-center text-center bg-gray-50 mb-4 hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-file-excel text-4xl text-green-500 mb-3"></i>
+                            <p class="text-sm font-bold text-gray-700 mb-1">Pilih File Excel</p>
+                            <input type="file" id="file-import" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileSelect(event)">
+                            <button onclick="document.getElementById('file-import').click()" class="bg-teal-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold mt-2 hover:bg-teal-700 transition-colors shadow-sm">Browse File</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="import-type" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-xl px-3 py-2 outline-none flex-1 font-semibold">
+                                <option value="siswa">Data Siswa (tabel_siswa)</option>
+                                <option value="guru">Data Guru (tabel_guru)</option>
+                                <option value="jadwal">Jadwal Pelajaran (tabel_jadwal)</option>
+                            </select>
+                            <button onclick="processImportToCloud()" id="btn-process-import" class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm opacity-50 cursor-not-allowed transition-colors" disabled>Kirim ke Cloud</button>
+                        </div>
+                        <p id="import-status" class="text-xs font-semibold text-center mt-3 hidden p-2 rounded-lg"></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-50">
+                        <h3 class="font-bold text-gray-800 text-lg"><i class="fas fa-info-circle text-orange-500 mr-2"></i> Petunjuk Kolom (Wajib)</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-700 mb-1">Header Data Siswa (tabel_siswa):</h4>
+                            <div class="bg-gray-100 text-gray-600 text-[11px] p-3 rounded-lg font-mono overflow-x-auto custom-scroll border border-gray-200">
+                                nisn, nis, nama, jk, tingkat, kelas, status_siswa, id_jurusan, tempat_lahir, tgl_lahir, no_hp, email_siswa, alamat
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-700 mb-1">Header Data Guru (tabel_guru):</h4>
+                            <div class="bg-gray-100 text-gray-600 text-[11px] p-3 rounded-lg font-mono overflow-x-auto custom-scroll border border-gray-200">
+                                nip, nama, jk, jabatan, wali_kelas, kelas_ajar
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-700 mb-1">Header Data Jadwal (tabel_jadwal):</h4>
+                            <div class="bg-gray-100 text-gray-600 text-[11px] p-3 rounded-lg font-mono overflow-x-auto custom-scroll border border-gray-200">
+                                hari, jam_mulai, jam_selesai, mapel, guru, ruang, kelas
+                            </div>
+                        </div>
+                        <div class="mt-4 flex flex-col gap-2">
+                            <button onclick="downloadTemplate('siswa')" class="bg-blue-50 text-blue-700 px-3 py-2.5 rounded-lg text-xs font-bold border border-blue-200 hover:bg-blue-100 transition-colors text-left flex justify-between items-center"><i class="fas fa-download"></i> Download Template Siswa</button>
+                            <button onclick="downloadTemplate('guru')" class="bg-orange-50 text-orange-700 px-3 py-2.5 rounded-lg text-xs font-bold border border-orange-200 hover:bg-orange-100 transition-colors text-left flex justify-between items-center"><i class="fas fa-download"></i> Download Template Guru</button>
+                            <button onclick="downloadTemplate('jadwal')" class="bg-purple-50 text-purple-700 px-3 py-2.5 rounded-lg text-xs font-bold border border-purple-200 hover:bg-purple-100 transition-colors text-left flex justify-between items-center"><i class="fas fa-download"></i> Download Template Jadwal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GURU: PENGATURAN ABSENSI & TAMPILAN -->
+        <div id="guru-section-pengaturan" class="guru-section hidden animate-fade-in">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Pengaturan Sistem</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-clock text-teal-600 mr-2"></i> Batasan Waktu Absen</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Jam Masuk (Buka)</label>
+                                <input type="time" id="set-jam-masuk-buka" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Jam Masuk (Tutup)</label>
+                                <input type="time" id="set-jam-masuk-tutup" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Jam Pulang (Mulai Bisa Absen)</label>
+                            <input type="time" id="set-jam-pulang" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-gray-800 text-lg"><i class="fas fa-map-marker-alt text-red-500 mr-2"></i> Kunci Lokasi (GPS)</h3>       
+                        <button onclick="getLokasiSekarang()" class="bg-blue-50 text-blue-600 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors"><i class="fas fa-crosshairs"></i> Deteksi Lokasi Ini</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Latitude (Garis Lintang)</label>
+                                <input type="text" id="set-lat" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500" placeholder="Contoh: -7.3274">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Longitude (Garis Bujur)</label>
+                                <input type="text" id="set-lng" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500" placeholder="Contoh: 108.214">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Radius Toleransi (Meter)</label>
+                            <input type="number" id="set-radius" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500" placeholder="Contoh: 100">
+                            <p class="text-[10px] text-gray-400 mt-1">Siswa harus berada di dalam radius ini untuk bisa absen.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 md:col-span-2">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-toggle-on text-indigo-500 mr-2"></i> Otonomi Guru (Akses Fitur)</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center pb-3 border-b border-gray-50">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Akses Kelola Jadwal</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Guru bisa membuat jadwal mengajarnya sendiri</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="set-akses-jadwal" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600 peer-checked:after:translate-x-full"></div>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Akses Pilih Kelas</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Guru bisa memilih kelas ajar di menu Profilnya</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="set-akses-kelas" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600 peer-checked:after:translate-x-full"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KARTU TAMPILAN LAYAR AWAL (Tambahkan ini) -->
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 md:col-span-2 mt-6">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-image text-purple-600 mr-2"></i> Tampilan Layar Awal & Halaman Login</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Logo Aplikasi (Layar Awal)</label>
+                            <div class="flex gap-3 items-center">
+                                <img id="preview-logo-setting" src="" class="w-12 h-12 rounded-lg border border-gray-200 object-cover hidden">
+                                <div class="flex-1">
+                                    <input type="file" id="set-logo-file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer">
+                                    <input type="hidden" id="set-logo-url">
+                                    <p class="text-[10px] text-gray-400 mt-1" id="status-logo-upload">Kosongkan jika pakai bawaan</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Logo Sekolah (Login)</label>
+                            <div class="flex gap-3 items-center">
+                                <img id="preview-logo-sekolah-setting" src="" class="w-12 h-12 rounded-lg border border-gray-200 object-cover hidden">
+                                <div class="flex-1">
+                                    <input type="file" id="set-logo-sekolah-file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                                    <input type="hidden" id="set-logo-sekolah-url">
+                                    <p class="text-[10px] text-gray-400 mt-1" id="status-logo-sekolah-upload">Muncul di pojok kiri Login</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Background Landing Page</label>
+                            <div class="flex gap-3 items-center">
+                                <img id="preview-bg-setting" src="" class="w-16 h-12 rounded-lg border border-gray-200 object-cover hidden">
+                                <div class="flex-1">
+                                    <input type="file" id="set-bg-file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer">
+                                    <input type="hidden" id="set-bg-url">
+                                    <p class="text-[10px] text-gray-400 mt-1" id="status-bg-upload">Kosongkan jika pakai bawaan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 md:col-span-2 mt-6">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-gift text-rose-500"></i> Manajemen Kejutan Ulang Tahun</h3>
+                    <div class="flex justify-between items-center bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 mb-6">
+                        <span class="text-xs font-bold text-gray-600">Status Fitur:</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="set-ultah-aktif" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500 peer-checked:after:translate-x-full"></div>
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 relative mt-2">
+                            <div class="absolute -top-3 left-4 bg-blue-100 text-blue-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Laki-Laki (L)</div>
+                            <label class="block text-xs font-bold text-gray-700 mb-2 mt-2">Pilih Template Aktif:</label>
+                            <div class="flex gap-2">
+                                <select id="select-template-l" onchange="simpanTemplateAktif(this.value, 'L')" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 bg-white">
+                                    <option value="">Memuat template...</option>
+                                </select>
+                                <button onclick="previewTemplate('L')" class="bg-blue-500 hover:bg-blue-600 text-white p-2.5 rounded-xl transition-colors shadow-sm"><i class="far fa-eye"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="bg-pink-50/50 p-4 rounded-2xl border border-pink-100 relative mt-2">
+                            <div class="absolute -top-3 left-4 bg-pink-100 text-pink-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Perempuan (P)</div>
+                            <label class="block text-xs font-bold text-gray-700 mb-2 mt-2">Pilih Template Aktif:</label>
+                            <div class="flex gap-2">
+                                <select id="select-template-p" onchange="simpanTemplateAktif(this.value, 'P')" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-pink-500 bg-white">
+                                    <option value="">Memuat template...</option>
+                                </select>
+                                <button onclick="previewTemplate('P')" class="bg-pink-500 hover:bg-pink-600 text-white p-2.5 rounded-xl transition-colors shadow-sm"><i class="far fa-eye"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center border-t border-gray-100 pt-5">
+                        <button onclick="bukaModalKelolaTemplate()" class="bg-white border-2 border-slate-200 hover:border-rose-400 hover:text-rose-500 text-slate-600 font-bold py-2.5 px-6 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm">
+                            <i class="fas fa-layer-group"></i> Kelola Bank Template Ucapan
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button id="btn-save-pengaturan" onclick="simpanPengaturan()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-colors flex items-center gap-2">
+                    <i class="fas fa-save"></i> Simpan Pengaturan
+                </button>
+            </div>
+        </div>
+
+        <!-- GURU: PROFIL AKUN -->
+        <div id="guru-section-profil-guru" class="guru-section hidden animate-fade-in">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Pengaturan Akun Saya</h1>
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 max-w-2xl">
+                <div class="flex items-center gap-6 mb-8 border-b border-gray-100 pb-6">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center border-4 border-teal-100 overflow-hidden relative">
+                            <img id="edit-preview-foto-guru" src="" onerror="this.style.display='none'; document.getElementById('edit-icon-guru').style.display='block';" class="absolute inset-0 w-full h-full object-cover z-10 hidden">
+                            <i id="edit-icon-guru" class="fas fa-user-tie text-4xl text-gray-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800" id="lbl-nama-guru">Nama Guru</h2>
+                            <p class="text-sm text-gray-500" id="lbl-nip-guru">NIP: -</p>
+                        </div>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Ganti Foto Profil</label>
+                        <input type="file" id="edit-foto-guru-file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+                        <input type="hidden" id="edit-foto-guru-url">
+                        <p class="text-xs text-gray-500 mt-1" id="status-foto-guru-upload"></p>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100" id="container-edit-kelas-ajar">
+                        <h3 class="font-bold text-gray-800 mb-2 text-sm flex items-center justify-between">
+                            <span>Pilih Kelas yang Anda Ajar</span>
+                            <span class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-100 font-bold"><i class="fas fa-unlock"></i> Otonomi Aktif</span>
+                        </h3>
+                        <p class="text-[10px] text-gray-500 mb-3">Centang kelas untuk memfilter otomatis data presensi dan jadwal Anda.</p>
+                        <div id="wrap-checkbox-kelas-ajar" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-40 overflow-y-auto custom-scroll p-3 bg-gray-50/50 rounded-xl border border-gray-100">
+                            <p class="text-[11px] text-gray-400 col-span-full text-center py-2"><i class="fas fa-spinner fa-spin"></i> Memuat daftar kelas...</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-3 text-sm">Keamanan</h3>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Kata Sandi Baru (Kosongkan jika tidak ingin diubah)</label>
+                        <input type="password" id="edit-password-guru" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:border-teal-500" placeholder="••••••••">
+                    </div>
+                    <div class="pt-4">
+                        <button id="btn-simpan-profil-guru" onclick="simpanProfilGuru()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-colors flex items-center gap-2">
+                            <i class="fas fa-save"></i> Simpan Perubahan Akun
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>      
+
+        <!-- GURU: MENU LAINNYA (MOBILE) -->
+        <div id="guru-section-menu" class="guru-section hidden animate-fade-in pb-10">
+            <div class="flex justify-between items-center mb-3 px-1">
+                <div>
+                    <h1 class="text-xl font-extrabold text-gray-800 leading-tight">Menu Pengajar</h1>
+                    <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Akses Cepat & Preferensi</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2.5">
+                <button onclick="switchGuruMenu('guru')" class="admin-only relative overflow-hidden rounded-xl p-2.5 text-left text-white shadow-sm active:scale-95 transition-all bg-gradient-to-br from-amber-500 to-orange-600 flex flex-col justify-between h-[102px] group">
+                    <div class="flex justify-between items-start">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/20">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] text-white/70">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-xs leading-tight">Data Guru</h3>
+                        <p class="text-[9px] text-amber-100/80 mt-0.5 font-medium truncate">Akses & Wali Kelas</p>
+                    </div>
+                </button>
+
+                <button onclick="switchGuruMenu('manajemen')" class="admin-only relative overflow-hidden rounded-xl p-2.5 text-left text-white shadow-sm active:scale-95 transition-all bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col justify-between h-[102px] group">
+                    <div class="flex justify-between items-start">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/20">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] text-white/70">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-xs leading-tight">Kelola Data</h3>
+                        <p class="text-[9px] text-blue-100/80 mt-0.5 font-medium truncate">Import Excel Cloud</p>
+                    </div>
+                </button>
+
+                <button onclick="switchGuruMenu('pengaturan')" class="admin-only relative overflow-hidden rounded-xl p-2.5 text-left text-white shadow-sm active:scale-95 transition-all bg-gradient-to-br from-cyan-500 to-teal-600 flex flex-col justify-between h-[102px] group">
+                    <div class="flex justify-between items-start">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/20">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] text-white/70">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-xs leading-tight">Pengaturan</h3>
+                        <p class="text-[9px] text-cyan-100/80 mt-0.5 font-medium truncate">Jam & Titik Lokasi</p>
+                    </div>
+                </button>
+
+                <button onclick="switchGuruMenu('pengumuman-admin')" class="relative overflow-hidden rounded-xl p-2.5 text-left text-white shadow-sm active:scale-95 transition-all bg-gradient-to-br from-rose-500 to-red-600 flex flex-col justify-between h-[102px] group">
+                    <div class="flex justify-between items-start">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/20">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] text-white/70">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-xs leading-tight">Pengumuman</h3>
+                        <p class="text-[9px] text-rose-100/80 mt-0.5 font-medium truncate">Publikasi ke Siswa</p>
+                    </div>
+                </button>
+
+                <button onclick="switchGuruMenu('jadwal-admin')" class="relative overflow-hidden rounded-xl p-2.5 text-left text-white shadow-sm active:scale-95 transition-all bg-gradient-to-br from-purple-500 to-fuchsia-600 flex flex-col justify-between h-[102px] group">
+                    <div class="flex justify-between items-start">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/20">
+                            <i class="far fa-calendar-alt"></i>
+                        </div>
+                        <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] text-white/70">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-xs leading-tight">Jadwal KBM</h3>
+                        <p class="text-[9px] text-purple-100/80 mt-0.5 font-medium truncate">Atur mapel & ruang</p>
+                    </div>
+                </button>
+
+                <button onclick="switchGuruMenu('profil-guru')" class="relative overflow-hidden rounded-xl p-2.5 text-left text-white shadow-sm active:scale-95 transition-all bg-gradient-to-br from-teal-500 to-emerald-600 flex flex-col justify-between h-[102px] group">
+                    <div class="flex justify-between items-start">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/20">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] text-white/70">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-xs leading-tight">Akun Saya</h3>
+                        <p class="text-[9px] text-teal-100/80 mt-0.5 font-medium truncate">Foto & Kata Sandi</p>
+                    </div>
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl p-3.5 shadow-sm border border-gray-100 mt-3 flex justify-between items-center" id="card-darkmode-guru">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shrink-0">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs text-gray-800">Mode Gelap (Dark Mode)</h4>
+                        <p class="text-[10px] text-gray-400">Tampilan malam hemat baterai</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input type="checkbox" id="toggle-dark-mode-guru" onchange="handleToggleDarkMode(this.checked)" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+            </div>
+
+            <button onclick="handleLogout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 rounded-xl py-2.5 flex items-center justify-center gap-2 font-bold text-xs shadow-sm transition-colors mt-3 border border-red-100">
+                <i class="fas fa-sign-out-alt"></i> Keluar Sistem
+            </button>
+        </div>        
+        </div>
+
+    <!-- Bottom Navigation (Guru/Admin Mobile) -->
+    <nav class="md:hidden absolute bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 flex justify-between items-end pb-5 pt-2 px-4 shadow-[0_-15px_30px_rgba(0,0,0,0.04)] z-50 rounded-t-3xl">                
+        <button onclick="switchGuruMenu('dashboard')" class="guru-mobnav-btn flex flex-col items-center text-teal-600 w-14 group transition-transform active:scale-95" data-target="dashboard">
+            <i class="fas fa-border-all text-xl mb-1.5 drop-shadow-sm"></i>
+            <span class="text-[9px] font-bold">Beranda</span>
+        </button>
+        
+        <button onclick="switchGuruMenu('siswa')" class="guru-mobnav-btn flex flex-col items-center text-gray-400 w-14 group transition-transform active:scale-95" data-target="siswa">
+            <i class="fas fa-user-graduate text-xl mb-1.5 drop-shadow-sm"></i>
+            <span class="text-[9px] font-bold">Siswa</span>
+        </button>
+
+        <div class="nav-fab-container">
+            <button onclick="switchGuruMenu('rekap')" class="nav-fab-btn bg-gradient-to-tr from-blue-600 to-cyan-400 shadow-[0_10px_20px_rgba(6,182,212,0.4)] hover:-translate-y-1 guru-mobnav-btn" data-target="rekap">
+                <i class="fas fa-clipboard-check text-[26px] drop-shadow-md"></i>
+            </button>
+            <span class="text-[10px] font-bold text-cyan-600 mt-9 mb-1">Rekap</span>
+        </div>
+
+        <button onclick="switchGuruMenu('izin-admin')" class="guru-mobnav-btn flex flex-col items-center text-gray-400 w-14 group transition-transform active:scale-95" data-target="izin-admin">
+            <i class="fas fa-envelope-open-text text-xl mb-1.5 drop-shadow-sm"></i>
+            <span class="text-[9px] font-bold">Izin</span>
+        </button>
+        
+        <button onclick="switchGuruMenu('menu')" class="guru-mobnav-btn flex flex-col items-center text-gray-400 w-14 group transition-transform active:scale-95" data-target="menu">
+            <i class="fas fa-bars text-xl mb-1.5 drop-shadow-sm"></i>
+            <span class="text-[9px] font-bold">Menu</span>
+        </button>
+    </nav>
