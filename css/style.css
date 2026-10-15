@@ -334,3 +334,25 @@ input[type="password"]::-ms-clear {
     opacity: 1 !important;
     filter: none !important;
 }
+
+/* ====================================================
+   PERBAIKAN PROPORSI LOGIN KHUSUS DESKTOP/PC
+==================================================== */
+@media (min-width: 768px) {
+    /* Memastikan latar belakang dan gelombang tetap full screen */
+    #screen-login {
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Menahan kotak konten form login agar tidak melebar raksasa */
+    #screen-login > .relative.z-10 {
+        max-width: 450px !important;
+        margin: 0 auto !important;
+        height: auto !important;
+        min-height: 600px;
+        border-radius: 2rem;
+        /* Opsional: Memberi bayangan halus di sekitar area login desktop */
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+    }
+}
