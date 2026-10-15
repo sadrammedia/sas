@@ -180,6 +180,24 @@ function switchGuruMenu(targetId) {
     if (targetId === 'jadwal-admin') { loadJadwalAdmin(); initDropdownJadwal(); }
     if (targetId === 'pengaturan') loadPengaturan();
     if (targetId === 'profil-guru') loadProfilGuru();
+
+    // Update State Bottom Navigation Mobile Guru
+    ['dashboard', 'siswa', 'rekap', 'izin-admin', 'menu'].forEach(id => {
+        // Karena rekap tidak punya class nav-item (dia FAB), kita pisahkan penanganannya
+        const navId = id === 'izin-admin' ? 'nav-guru-izin' : `nav-guru-${id}`;
+        const el = document.getElementById(navId);
+        if (el && navId !== 'nav-guru-rekap') {
+            el.classList.remove('active-nav');
+        }
+    });
+
+    // Nyalakan yang sedang diklik
+    let activeNavId = `nav-guru-${targetId}`;
+    if (targetId === 'izin-admin') activeNavId = 'nav-guru-izin';
+    const activeNav = document.getElementById(activeNavId);
+    if (activeNav && targetId !== 'rekap') {
+        activeNav.classList.add('active-nav');
+    }
 }
 
 
