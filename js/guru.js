@@ -2075,3 +2075,162 @@ if (typeof originalSetupGuruDashboard === 'function') {
         syncDarkModeGuruUI(isDark);
     };
 }
+
+
+// ==========================================
+// 10. NAVIGASI TAB PENGATURAN & WHITELIST DEVICE
+// ==========================================
+
+function switchTabPengaturan(tabId) {
+    // 1. Sembunyikan semua konten tab
+    ['waktu', 'ui', 'fitur', 'keamanan'].forEach(id => {
+        const content = document.getElementById(`tab-content-${id}`);
+        const btn = document.getElementById(`tab-btn-${id}`);
+        
+        if (content) content.classList.add('hidden');
+        
+        // Kembalikan warna tombol ke abu-abu (tidak aktif)
+        if (btn) {
+            btn.classList.remove('bg-teal-600', 'text-white');
+            btn.classList.add('bg-white', 'text-gray-500');
+        }
+    });
+
+    // 2. Munculkan konten tab yang dipilih
+    const activeContent = document.getElementById(`tab-content-${tabId}`);
+    const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+    
+    if (activeContent) activeContent.classList.remove('hidden');
+    if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-gray-500');
+        activeBtn.classList.add('bg-teal-600', 'text-white');
+    }
+
+    // 3. Pemicu Khusus: Jika tab Keamanan dibuka, muat data Whitelist otomatis
+    if (tabId === 'keamanan') {
+        muatDataWhitelist();
+    }
+}
+
+// Variabel penampung data untuk fitur pencarian
+let rawWhitelistData = [];
+
+async function muatDataWhitelist() {
+    const tbody = document.getElementById('tabel-data-whitelist');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-gray-400"><i class="fas fa-spinner fa-spin mr-1"></i> Menarik data dari Cloud...</td></tr>';
+
+    try {
+        // Ambil data siswa yang relevan (hanya NIS, Nama, Kelas, dan status Bypass)
+        const { data, error } = await db.from('tabel_siswa')
+            .select('nis, nama, kelas, bypass_device')
+            .order('kelas', { ascending: true })
+            .order('nama', { ascending: true });
+
+        if (error) throw error;
+
+        rawWhitelistData = data || [];
+
+        // Buat daftar dropdown Kelas secara otomatis
+        const filterKelasEl = document.getElementById('filter-whitelist-kelas');
+        if (filterKelasEl) {
+            const currentSelected = filterKelasEl.value;
+            const availableClasses = [...new Set(rawWhitelistData.map(s => s.kelas ? s.kelas.trim() : null).filter(Boolean))].sort();
+            filterKelasEl.innerHTML = '<option value="ALL">Semua Kelas</option>';
+            availableClasses.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k;
+                opt.textContent = k;
+                if (k === currentSelected) opt.selected = true;
+                filterKelasEl.appendChild(opt);
+            });
+        }
+
+        applyFilterWhitelist();
+
+    } catch (err) {
+        console.error("Gagal memuat data whitelist:", err);
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-red-500 font-medium"><i class="fas fa-exclamation-triangle"></i> Gagal memuat data (${err.message || 'Error RLS'})</td></tr>`;
+    }
+}
+
+function applyFilterWhitelist() {
+    const tbody = document.getElementById('tabel-data-whitelist');
+    if (!rawWhitelistData || rawWhitelistData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-gray-400">Belum ada data siswa di database.</td></tr>';
+        return;
+    }
+
+    const keyword = (document.getElementById('filter-whitelist-keyword').value || '').trim().toLowerCase();
+    const filterKelas = document.getElementById('filter-whitelist-kelas').value || 'ALL';
+
+    let filtered = rawWhitelistData.filter(s => {
+        const matchKeyword = !keyword || 
+            (s.nama && s.nama.toLowerCase().includes(keyword)) ||
+            (s.nis && String(s.nis).toLowerCase().includes(keyword));
+            
+        const matchKelas = filterKelas === 'ALL' || (s.kelas && s.kelas.trim() === filterKelas);
+        
+        return matchKeyword && matchKelas;
+    });
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-gray-400">Tidak ada siswa yang cocok dengan filter pencarian.</td></tr>';
+        return;
+    }
+
+    let htmlRows = '';
+    filtered.forEach(s => {
+        const isBypass = s.bypass_device === true; // Pastikan boolean
+        const toggleId = `toggle-bypass-${s.nis}`;
+        
+        htmlRows += `
+            <tr class="hover:bg-slate-50 border-b border-gray-100 transition-colors">
+                <td class="px-4 py-3 font-mono text-gray-600 text-xs">${s.nis}</td>
+                <td class="px-4 py-3 font-bold text-gray-800 text-xs">${s.nama}</td>
+                <td class="px-4 py-3 text-xs text-gray-600 font-medium">${s.kelas || '-'}</td>
+                <td class="px-4 py-3 text-center">
+                    <label class="relative inline-flex items-center cursor-pointer" title="${isBypass ? 'Matikan Bypass' : 'Aktifkan Bypass'}">
+                        <input type="checkbox" id="${toggleId}" onchange="toggleBypassDevice('${s.nis}', this.checked)" class="sr-only peer" ${isBypass ? 'checked' : ''}>
+                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-500 shadow-inner"></div>
+                    </label>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = htmlRows;
+}
+
+async function toggleBypassDevice(nis, isBypassAktif) {
+    try {
+        // 1. Eksekusi pembaruan (UPDATE) langsung ke Cloud Supabase
+        const { error } = await db.from('tabel_siswa')
+            .update({ bypass_device: isBypassAktif })
+            .eq('nis', nis);
+            
+        if (error) throw error;
+
+        // 2. Perbarui data lokal (array di memori) agar jika admin mencari nama lain, 
+        // status sakelar yang baru diklik tidak ter-reset secara visual.
+        const studentIndex = rawWhitelistData.findIndex(s => s.nis === nis);
+        if(studentIndex !== -1) {
+            rawWhitelistData[studentIndex].bypass_device = isBypassAktif;
+        }
+
+        const pesanStatus = isBypassAktif 
+            ? `Bypass Perangkat DIAKTIFKAN untuk NIS ${nis}` 
+            : `Bypass Perangkat DIMATIKAN untuk NIS ${nis}`;
+            
+        showToast(pesanStatus);
+        
+    } catch (err) {
+        console.error("Gagal update status bypass:", err);
+        showToast("Gagal memperbarui status. Periksa koneksi/RLS tabel_siswa.", true);
+        
+        // Kembalikan posisi sakelar jika terjadi error di jaringan/database
+        const toggle = document.getElementById(`toggle-bypass-${nis}`);
+        if(toggle) toggle.checked = !isBypassAktif;
+    }
+}
