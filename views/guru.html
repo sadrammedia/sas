@@ -739,10 +739,35 @@
         </div>
 
         <!-- GURU: PENGATURAN ABSENSI & TAMPILAN -->
-        <div id="guru-section-pengaturan" class="guru-section hidden animate-fade-in">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">Pengaturan Sistem</h1>
+        <div id="guru-section-pengaturan" class="guru-section hidden animate-fade-in pb-10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Pengaturan Sistem</h1>
+                    <p class="text-xs text-gray-500 font-medium">Konfigurasi pusat dan keamanan presensi</p>
+                </div>
+                <button id="btn-save-pengaturan" onclick="simpanPengaturan()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-colors flex items-center gap-2 text-sm">
+                    <i class="fas fa-save"></i> Simpan Pengaturan
+                </button>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- NAVIGASI TAB PENGATURAN -->
+            <div class="flex overflow-x-auto custom-scroll gap-2 mb-6 pb-2">
+                <button onclick="switchTabPengaturan('waktu')" id="tab-btn-waktu" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-teal-600 text-white shadow-sm shrink-0 flex items-center gap-2">
+                    <i class="fas fa-clock"></i> Absensi & Lokasi
+                </button>
+                <button onclick="switchTabPengaturan('ui')" id="tab-btn-ui" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-gray-500 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
+                    <i class="fas fa-image"></i> Tampilan UI
+                </button>
+                <button onclick="switchTabPengaturan('fitur')" id="tab-btn-fitur" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-gray-500 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
+                    <i class="fas fa-star"></i> Fitur Khusus
+                </button>
+                <button onclick="switchTabPengaturan('keamanan')" id="tab-btn-keamanan" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-gray-500 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
+                    <i class="fas fa-shield-alt"></i> Keamanan & Akses
+                </button>
+            </div>
+
+            <!-- TAB 1: ABSENSI & LOKASI -->
+            <div id="tab-content-waktu" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
                     <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-clock text-teal-600 mr-2"></i> Batasan Waktu Absen</h3>
                     <div class="space-y-4">
@@ -771,11 +796,11 @@
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Latitude (Garis Lintang)</label>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Latitude</label>
                                 <input type="text" id="set-lat" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500" placeholder="Contoh: -7.3274">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Longitude (Garis Bujur)</label>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Longitude</label>
                                 <input type="text" id="set-lng" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-500" placeholder="Contoh: 108.214">
                             </div>
                         </div>
@@ -786,36 +811,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 md:col-span-2">
-                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-toggle-on text-indigo-500 mr-2"></i> Otonomi Guru (Akses Fitur)</h3>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center pb-3 border-b border-gray-50">
-                            <div>
-                                <h4 class="font-bold text-sm text-gray-800">Akses Kelola Jadwal</h4>
-                                <p class="text-[10px] text-gray-500 mt-0.5">Guru bisa membuat jadwal mengajarnya sendiri</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="set-akses-jadwal" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600 peer-checked:after:translate-x-full"></div>
-                            </label>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4 class="font-bold text-sm text-gray-800">Akses Pilih Kelas</h4>
-                                <p class="text-[10px] text-gray-500 mt-0.5">Guru bisa memilih kelas ajar di menu Profilnya</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="set-akses-kelas" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600 peer-checked:after:translate-x-full"></div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- KARTU TAMPILAN LAYAR AWAL (Tambahkan ini) -->
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 md:col-span-2 mt-6">
-                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-image text-purple-600 mr-2"></i> Tampilan Layar Awal & Halaman Login</h3>
+            <!-- TAB 2: TAMPILAN APLIKASI -->
+            <div id="tab-content-ui" class="grid grid-cols-1 gap-6 hidden animate-fade-in">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-image text-purple-600 mr-2"></i> Tampilan Layar Awal & Login</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">Logo Aplikasi (Layar Awal)</label>
@@ -852,9 +853,38 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 md:col-span-2 mt-6">
-                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-gift text-rose-500"></i> Manajemen Kejutan Ulang Tahun</h3>
+            <!-- TAB 3: FITUR KHUSUS -->
+            <div id="tab-content-fitur" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden animate-fade-in">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-toggle-on text-indigo-500 mr-2"></i> Otonomi Guru (Akses)</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center pb-3 border-b border-gray-50">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Kelola Jadwal Sendiri</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Guru bisa membuat jadwal mengajarnya</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="set-akses-jadwal" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600 peer-checked:after:translate-x-full"></div>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">Bebas Pilih Kelas</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Guru bisa memilih kelas ajar di Profilnya</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="set-akses-kelas" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600 peer-checked:after:translate-x-full"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-gift text-rose-500 mr-2"></i> Kejutan Ulang Tahun</h3>
                     <div class="flex justify-between items-center bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 mb-6">
                         <span class="text-xs font-bold text-gray-600">Status Fitur:</span>
                         <label class="relative inline-flex items-center cursor-pointer">
@@ -863,43 +893,71 @@
                         </label>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 relative mt-2">
-                            <div class="absolute -top-3 left-4 bg-blue-100 text-blue-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Laki-Laki (L)</div>
-                            <label class="block text-xs font-bold text-gray-700 mb-2 mt-2">Pilih Template Aktif:</label>
-                            <div class="flex gap-2">
-                                <select id="select-template-l" onchange="simpanTemplateAktif(this.value, 'L')" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 bg-white">
-                                    <option value="">Memuat template...</option>
-                                </select>
-                                <button onclick="previewTemplate('L')" class="bg-blue-500 hover:bg-blue-600 text-white p-2.5 rounded-xl transition-colors shadow-sm"><i class="far fa-eye"></i></button>
+                    <div class="space-y-3 mb-6">
+                        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex items-center justify-between">
+                            <div class="flex-1">
+                                <span class="bg-blue-100 text-blue-700 text-[9px] font-extrabold px-2 py-0.5 rounded-md mb-1 inline-block">Laki-Laki (L)</span>
+                                <select id="select-template-l" onchange="simpanTemplateAktif(this.value, 'L')" class="w-full bg-transparent text-xs font-bold text-blue-800 outline-none"><option value="">Memuat...</option></select>
                             </div>
+                            <button onclick="previewTemplate('L')" class="bg-white text-blue-500 p-2 rounded-lg shadow-sm border border-blue-100 ml-2"><i class="far fa-eye text-xs"></i></button>
                         </div>
-
-                        <div class="bg-pink-50/50 p-4 rounded-2xl border border-pink-100 relative mt-2">
-                            <div class="absolute -top-3 left-4 bg-pink-100 text-pink-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Perempuan (P)</div>
-                            <label class="block text-xs font-bold text-gray-700 mb-2 mt-2">Pilih Template Aktif:</label>
-                            <div class="flex gap-2">
-                                <select id="select-template-p" onchange="simpanTemplateAktif(this.value, 'P')" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-pink-500 bg-white">
-                                    <option value="">Memuat template...</option>
-                                </select>
-                                <button onclick="previewTemplate('P')" class="bg-pink-500 hover:bg-pink-600 text-white p-2.5 rounded-xl transition-colors shadow-sm"><i class="far fa-eye"></i></button>
+                        <div class="bg-pink-50 p-3 rounded-xl border border-pink-100 flex items-center justify-between">
+                            <div class="flex-1">
+                                <span class="bg-pink-100 text-pink-700 text-[9px] font-extrabold px-2 py-0.5 rounded-md mb-1 inline-block">Perempuan (P)</span>
+                                <select id="select-template-p" onchange="simpanTemplateAktif(this.value, 'P')" class="w-full bg-transparent text-xs font-bold text-pink-800 outline-none"><option value="">Memuat...</option></select>
                             </div>
+                            <button onclick="previewTemplate('P')" class="bg-white text-pink-500 p-2 rounded-lg shadow-sm border border-pink-100 ml-2"><i class="far fa-eye text-xs"></i></button>
                         </div>
                     </div>
+                    <button onclick="bukaModalKelolaTemplate()" class="w-full bg-white border border-slate-200 hover:border-rose-400 hover:text-rose-500 text-slate-600 font-bold py-2 rounded-xl transition-all text-xs shadow-sm">
+                        <i class="fas fa-layer-group"></i> Kelola Bank Template Ucapan
+                    </button>
+                </div>
+            </div>
 
-                    <div class="flex justify-center border-t border-gray-100 pt-5">
-                        <button onclick="bukaModalKelolaTemplate()" class="bg-white border-2 border-slate-200 hover:border-rose-400 hover:text-rose-500 text-slate-600 font-bold py-2.5 px-6 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm">
-                            <i class="fas fa-layer-group"></i> Kelola Bank Template Ucapan
+            <!-- TAB 4: KEAMANAN & AKSES (WHITELIST) -->
+            <div id="tab-content-keamanan" class="grid grid-cols-1 gap-6 hidden animate-fade-in">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-2 border-b border-gray-50 pb-4">
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2"><i class="fas fa-unlock-alt text-red-500"></i> Pengecualian Perangkat (Whitelist)</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Siswa yang dicentang tidak akan diblokir meskipun Device ID (HP/Browser) mereka berubah.</p>
+                        </div>
+                        <button onclick="muatDataWhitelist()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-bold border border-gray-200 shadow-sm shrink-0">
+                            <i class="fas fa-sync-alt"></i> Refresh Data
                         </button>
+                    </div>
+                    
+                    <!-- Filter Whitelist -->
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 mb-4 flex gap-3">
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            <input type="text" id="filter-whitelist-keyword" oninput="applyFilterWhitelist()" placeholder="Cari Nama atau NIS..." class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-teal-500 bg-white shadow-sm">
+                        </div>
+                        <select id="filter-whitelist-kelas" onchange="applyFilterWhitelist()" class="w-1/3 py-2 px-3 border border-gray-200 rounded-xl text-xs outline-none focus:border-teal-500 bg-white font-bold text-gray-700 shadow-sm">
+                            <option value="ALL">Semua Kelas</option>
+                        </select>
+                    </div>
+
+                    <!-- Tabel Whitelist -->
+                    <div class="overflow-x-auto custom-scroll max-h-[50vh] border border-gray-200 rounded-xl shadow-inner">
+                        <table class="w-full text-left text-sm whitespace-nowrap bg-white">
+                            <thead class="bg-slate-100 text-gray-600 font-bold border-b border-gray-200 sticky top-0 z-10 text-xs">
+                                <tr>
+                                    <th class="px-4 py-3 border-r border-gray-200 w-24">NIS</th>
+                                    <th class="px-4 py-3 border-r border-gray-200">Nama Lengkap</th>
+                                    <th class="px-4 py-3 border-r border-gray-200 w-32">Kelas</th>
+                                    <th class="px-4 py-3 text-center w-36">Akses Bypass</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100" id="tabel-data-whitelist">
+                                <tr><td colspan="4" class="text-center p-8 text-gray-400"><i class="fas fa-spinner fa-spin mr-1"></i> Memuat data...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-6 flex justify-end">
-                <button id="btn-save-pengaturan" onclick="simpanPengaturan()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-colors flex items-center gap-2">
-                    <i class="fas fa-save"></i> Simpan Pengaturan
-                </button>
-            </div>
+
         </div>
 
         <!-- GURU: PROFIL AKUN -->
