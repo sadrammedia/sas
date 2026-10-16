@@ -740,28 +740,30 @@
 
         <!-- GURU: PENGATURAN ABSENSI & TAMPILAN -->
         <div id="guru-section-pengaturan" class="guru-section hidden animate-fade-in pb-10">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-3">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800">Pengaturan Sistem</h1>
-                    <p class="text-xs text-gray-500 font-medium">Konfigurasi pusat dan keamanan presensi</p>
+                    <p class="text-xs text-gray-500 font-medium mt-0.5">Konfigurasi pusat dan keamanan presensi</p>
                 </div>
-                <button id="btn-save-pengaturan" onclick="simpanPengaturan()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-colors flex items-center gap-2 text-sm">
+                <!-- PERBAIKAN: Tombol diperkecil (px-5 py-2), diganti kapsul (rounded-full), dan ukuran font lebih kecil (text-xs) -->
+                <button id="btn-save-pengaturan" onclick="simpanPengaturan()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors flex items-center gap-2 text-xs shrink-0">
                     <i class="fas fa-save"></i> Simpan Pengaturan
                 </button>
             </div>
             
             <!-- NAVIGASI TAB PENGATURAN -->
             <div class="flex overflow-x-auto custom-scroll gap-2 mb-6 pb-2">
-                <button onclick="switchTabPengaturan('waktu')" id="tab-btn-waktu" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-teal-600 text-white shadow-sm shrink-0 flex items-center gap-2">
+                <!-- PERBAIKAN: Semua tombol dibuat menjadi kapsul (rounded-full) agar senada dengan UI di gambar Anda -->
+                <button onclick="switchTabPengaturan('waktu')" id="tab-btn-waktu" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-teal-600 text-white shadow-sm shrink-0 flex items-center gap-2">
                     <i class="fas fa-clock"></i> Absensi & Lokasi
                 </button>
-                <button onclick="switchTabPengaturan('ui')" id="tab-btn-ui" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-gray-500 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
+                <button onclick="switchTabPengaturan('ui')" id="tab-btn-ui" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
                     <i class="fas fa-image"></i> Tampilan UI
                 </button>
-                <button onclick="switchTabPengaturan('fitur')" id="tab-btn-fitur" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-gray-500 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
+                <button onclick="switchTabPengaturan('fitur')" id="tab-btn-fitur" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
                     <i class="fas fa-star"></i> Fitur Khusus
                 </button>
-                <button onclick="switchTabPengaturan('keamanan')" id="tab-btn-keamanan" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-gray-500 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
+                <button onclick="switchTabPengaturan('keamanan')" id="tab-btn-keamanan" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 shrink-0 flex items-center gap-2">
                     <i class="fas fa-shield-alt"></i> Keamanan & Akses
                 </button>
             </div>
