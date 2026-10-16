@@ -2080,33 +2080,30 @@ if (typeof originalSetupGuruDashboard === 'function') {
 // ==========================================
 // 10. NAVIGASI TAB PENGATURAN & WHITELIST DEVICE
 // ==========================================
-
 function switchTabPengaturan(tabId) {
-    // 1. Sembunyikan semua konten tab
     ['waktu', 'ui', 'fitur', 'keamanan'].forEach(id => {
         const content = document.getElementById(`tab-content-${id}`);
         const btn = document.getElementById(`tab-btn-${id}`);
         
         if (content) content.classList.add('hidden');
         
-        // Kembalikan warna tombol ke abu-abu (tidak aktif)
         if (btn) {
             btn.classList.remove('bg-teal-600', 'text-white');
-            btn.classList.add('bg-white', 'text-gray-500');
+            // PERBAIKAN: Pastikan teksnya menjadi gray-600 agar terbaca jelas di Light Mode
+            btn.classList.add('bg-white', 'text-gray-600'); 
         }
     });
 
-    // 2. Munculkan konten tab yang dipilih
     const activeContent = document.getElementById(`tab-content-${tabId}`);
     const activeBtn = document.getElementById(`tab-btn-${tabId}`);
     
     if (activeContent) activeContent.classList.remove('hidden');
     if (activeBtn) {
-        activeBtn.classList.remove('bg-white', 'text-gray-500');
+        // PERBAIKAN: Saat aktif, pastikan class text-gray-600 dicabut
+        activeBtn.classList.remove('bg-white', 'text-gray-600', 'text-gray-500'); 
         activeBtn.classList.add('bg-teal-600', 'text-white');
     }
 
-    // 3. Pemicu Khusus: Jika tab Keamanan dibuka, muat data Whitelist otomatis
     if (tabId === 'keamanan') {
         muatDataWhitelist();
     }
