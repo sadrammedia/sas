@@ -2081,6 +2081,7 @@ if (typeof originalSetupGuruDashboard === 'function') {
 // 10. NAVIGASI TAB PENGATURAN & WHITELIST DEVICE
 // ==========================================
 function switchTabPengaturan(tabId) {
+    // 1. Reset semua tab ke status TIDAK AKTIF (Abu-abu / Slate)
     ['waktu', 'ui', 'fitur', 'keamanan'].forEach(id => {
         const content = document.getElementById(`tab-content-${id}`);
         const btn = document.getElementById(`tab-btn-${id}`);
@@ -2088,22 +2089,28 @@ function switchTabPengaturan(tabId) {
         if (content) content.classList.add('hidden');
         
         if (btn) {
+            // Cabut warna aktif (Teal/Putih)
             btn.classList.remove('bg-teal-600', 'text-white');
-            // PERBAIKAN: Pastikan teksnya menjadi gray-600 agar terbaca jelas di Light Mode
-            btn.classList.add('bg-white', 'text-gray-600'); 
+            // Pasang warna tidak aktif yang kebal Dark Mode (Gunakan Slate)
+            btn.classList.add('bg-slate-100', 'text-slate-600');
+            // Hapus kelas transparan bawaan HTML
+            btn.classList.remove('bg-white');
         }
     });
 
+    // 2. Set tab yang diklik menjadi AKTIF (Teal/Putih)
     const activeContent = document.getElementById(`tab-content-${tabId}`);
     const activeBtn = document.getElementById(`tab-btn-${tabId}`);
     
     if (activeContent) activeContent.classList.remove('hidden');
     if (activeBtn) {
-        // PERBAIKAN: Saat aktif, pastikan class text-gray-600 dicabut
-        activeBtn.classList.remove('bg-white', 'text-gray-600', 'text-gray-500'); 
+        // Cabut warna tidak aktif
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-600', 'bg-white', 'text-gray-500', 'text-gray-600'); 
+        // Pasang warna aktif
         activeBtn.classList.add('bg-teal-600', 'text-white');
     }
 
+    // 3. Pemicu khusus
     if (tabId === 'keamanan') {
         muatDataWhitelist();
     }
