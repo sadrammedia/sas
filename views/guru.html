@@ -819,46 +819,64 @@
             <div id="tab-content-ui" class="grid grid-cols-1 gap-6 hidden animate-fade-in">
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
                     <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-image text-purple-600 mr-2"></i> Tampilan Layar Awal & Login</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Logo Layar Awal -->
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Logo Aplikasi (Layar Awal)</label>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Logo Aplikasi (Awal)</label>
                             <div class="flex gap-3 items-center">
                                 <img id="preview-logo-setting" src="" class="w-12 h-12 rounded-lg border border-gray-200 object-cover hidden">
                                 <div class="flex-1">
-                                    <input type="file" id="set-logo-file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer">
+                                    <input type="file" id="set-logo-file" accept="image/*" class="w-full text-[10px] text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer">
                                     <input type="hidden" id="set-logo-url">
-                                    <p class="text-[10px] text-gray-400 mt-1" id="status-logo-upload">Kosongkan jika pakai bawaan</p>
                                 </div>
                             </div>
                         </div>
+                        <!-- Logo Login -->
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">Logo Sekolah (Login)</label>
                             <div class="flex gap-3 items-center">
                                 <img id="preview-logo-sekolah-setting" src="" class="w-12 h-12 rounded-lg border border-gray-200 object-cover hidden">
                                 <div class="flex-1">
-                                    <input type="file" id="set-logo-sekolah-file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                                    <input type="file" id="set-logo-sekolah-file" accept="image/*" class="w-full text-[10px] text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                                     <input type="hidden" id="set-logo-sekolah-url">
-                                    <p class="text-[10px] text-gray-400 mt-1" id="status-logo-sekolah-upload">Muncul di pojok kiri Login</p>
                                 </div>
                             </div>
                         </div>
+                        <!-- Background Landing -->
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Background Landing Page</label>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Background Landing</label>
                             <div class="flex gap-3 items-center">
                                 <img id="preview-bg-setting" src="" class="w-16 h-12 rounded-lg border border-gray-200 object-cover hidden">
                                 <div class="flex-1">
-                                    <input type="file" id="set-bg-file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer">
+                                    <input type="file" id="set-bg-file" accept="image/*" class="w-full text-[10px] text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer">
                                     <input type="hidden" id="set-bg-url">
-                                    <p class="text-[10px] text-gray-400 mt-1" id="status-bg-upload">Kosongkan jika pakai bawaan</p>
                                 </div>
                             </div>
                         </div>
+                        <!-- FITUR BARU: Background Siswa -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Background Dasbor Siswa</label>
+                            <div class="flex gap-3 items-center">
+                                <img id="preview-bg-siswa-setting" src="" class="w-16 h-12 rounded-lg border border-gray-200 object-cover hidden">
+                                <div class="flex-1">
+                                    <input type="file" id="set-bg-siswa-file" accept="image/*" class="w-full text-[10px] text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+                                    <input type="hidden" id="set-bg-siswa-url">
+                                    <p class="text-[9px] text-gray-400 mt-1" id="status-bg-siswa-upload">Muncul di header siswa</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 mt-2">
+                        <p class="text-[9px] text-gray-400" id="status-logo-upload"></p>
+                        <p class="text-[9px] text-gray-400" id="status-logo-sekolah-upload"></p>
+                        <p class="text-[9px] text-gray-400" id="status-bg-upload"></p>
                     </div>
                 </div>
             </div>
 
             <!-- TAB 3: FITUR KHUSUS -->
             <div id="tab-content-fitur" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden animate-fade-in">
+                <!-- Kotak Otonomi Guru -->
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
                     <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-toggle-on text-indigo-500 mr-2"></i> Otonomi Guru (Akses)</h3>
                     <div class="space-y-4">
@@ -885,6 +903,7 @@
                     </div>
                 </div>
 
+                <!-- Kotak Kejutan Ulang Tahun -->
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
                     <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-gift text-rose-500 mr-2"></i> Kejutan Ulang Tahun</h3>
                     <div class="flex justify-between items-center bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 mb-6">
@@ -914,6 +933,34 @@
                     <button onclick="bukaModalKelolaTemplate()" class="w-full bg-white border border-slate-200 hover:border-rose-400 hover:text-rose-500 text-slate-600 font-bold py-2 rounded-xl transition-all text-xs shadow-sm">
                         <i class="fas fa-layer-group"></i> Kelola Bank Template Ucapan
                     </button>
+                </div>
+
+                <!-- FITUR BARU: Bank Kata Motivasi -->
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 md:col-span-2">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4"><i class="fas fa-comment-dots text-yellow-500 mr-2"></i> Bank Kata Motivasi Siswa</h3>
+                    
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="flex-1">
+                            <input type="text" id="input-quote-baru" placeholder="Tulis kutipan penyemangat pendek di sini..." class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-yellow-500 bg-gray-50/50">
+                        </div>
+                        <button id="btn-tambah-quote" onclick="tambahQuoteBaru()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-colors shrink-0 text-sm flex items-center gap-2 justify-center">
+                            <i class="fas fa-plus"></i> Tambah ke Bank
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto custom-scroll max-h-[40vh] border border-gray-200 rounded-xl shadow-inner">
+                        <table class="w-full text-left text-sm whitespace-nowrap bg-white">
+                            <thead class="bg-slate-100 text-gray-600 font-bold border-b border-gray-200 sticky top-0 z-10 text-xs">
+                                <tr>
+                                    <th class="px-4 py-3 border-r border-gray-200">Kutipan Harian (Berganti Otomatis)</th>
+                                    <th class="px-4 py-3 text-center w-24">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100" id="tabel-data-quotes">
+                                <tr><td colspan="2" class="text-center p-8 text-gray-400"><i class="fas fa-spinner fa-spin mr-1"></i> Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
