@@ -859,7 +859,7 @@
                             <div class="flex gap-3 items-center">
                                 <img id="preview-bg-siswa-setting" src="" class="w-16 h-12 rounded-lg border border-gray-200 object-cover hidden">
                                 <div class="flex-1">
-                                    <input type="file" id="set-bg-siswa-file" accept="image/*" class="w-full text-[10px] text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+                                    <input type="file" id="set-bg-siswa-file" accept="image/*" class="w-full text-[10px] text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer" onchange="handleTampilanUpload('set-bg-siswa-file', 'status-bg-siswa-upload', 'set-bg-siswa-url', 'preview-bg-siswa-setting')">
                                     <input type="hidden" id="set-bg-siswa-url">
                                     <p class="text-[9px] text-gray-400 mt-1" id="status-bg-siswa-upload">Muncul di header siswa</p>
                                 </div>
