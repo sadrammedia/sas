@@ -1080,6 +1080,12 @@ async function loadPengaturan() {
             document.getElementById('set-logo-sekolah-url').value = data.logo_sekolah_url || '';
             document.getElementById('set-bg-url').value = data.bg_url || '';
 
+            document.getElementById('set-bg-siswa-url').value = data.bg_siswa_url || '';
+            if (data.bg_siswa_url) {
+                document.getElementById('preview-bg-siswa-setting').src = data.bg_siswa_url;
+                document.getElementById('preview-bg-siswa-setting').classList.remove('hidden');
+            }
+
             document.getElementById('set-akses-jadwal').checked = data.akses_guru_jadwal || false;
             document.getElementById('set-akses-kelas').checked = data.akses_guru_kelas || false;
 
@@ -1164,6 +1170,9 @@ if (setBgFileEl) setBgFileEl.addEventListener('change', () => handleTampilanUplo
 const setLogoSekolahFileEl = document.getElementById('set-logo-sekolah-file');
 if (setLogoSekolahFileEl) setLogoSekolahFileEl.addEventListener('change', () => handleTampilanUpload('set-logo-sekolah-file', 'status-logo-sekolah-upload', 'set-logo-sekolah-url', 'preview-logo-sekolah-setting'));
 
+const setBgSiswaFileEl = document.getElementById('set-bg-siswa-file');
+if (setBgSiswaFileEl) setBgSiswaFileEl.addEventListener('change', () => handleTampilanUpload('set-bg-siswa-file', 'status-bg-siswa-upload', 'set-bg-siswa-url', 'preview-bg-siswa-setting'));
+
 async function simpanPengaturan() {
     const btn = document.getElementById('btn-save-pengaturan');
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
@@ -1181,6 +1190,7 @@ async function simpanPengaturan() {
             logo_url: document.getElementById('set-logo-url').value, 
             bg_url: document.getElementById('set-bg-url').value,
             logo_sekolah_url: document.getElementById('set-logo-sekolah-url').value,  
+            bg_siswa_url: document.getElementById('set-bg-siswa-url').value,
             akses_guru_jadwal: document.getElementById('set-akses-jadwal').checked,
             akses_guru_kelas: document.getElementById('set-akses-kelas').checked,
             // HANYA simpan status aktif sakelar. Data template_l dan template_p sudah 
@@ -2236,5 +2246,101 @@ async function toggleBypassDevice(nis, isBypassAktif) {
         // Kembalikan posisi sakelar jika terjadi error di jaringan/database
         const toggle = document.getElementById(`toggle-bypass-${nis}`);
         if(toggle) toggle.checked = !isBypassAktif;
+    }
+}
+
+
+// ==========================================
+// 11. MANAJEMEN BANK KATA MOTIVASI (QUOTES)
+// ==========================================
+
+// Pemicu tambahan: Muat data quotes saat tab 'fitur' diklik
+const originalSwitchTabPengaturan = window.switchTabPengaturan;
+if (typeof originalSwitchTabPengaturan === 'function') {
+    window.switchTabPengaturan = function(tabId) {
+        originalSwitchTabPengaturan(tabId);
+        if (tabId === 'fitur') {
+            loadDataQuotes();
+        }
+    };
+}
+
+async function loadDataQuotes() {
+    const tbody = document.getElementById('tabel-data-quotes');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-gray-400"><i class="fas fa-spinner fa-spin mr-1"></i> Menarik kutipan...</td></tr>';
+
+    try {
+        const { data, error } = await db.from('tabel_quotes').select('*').order('id', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-gray-400">Belum ada kutipan. Silakan tambahkan baru.</td></tr>';
+            return;
+        }
+
+        let htmlRows = '';
+        data.forEach(q => {
+            htmlRows += `
+                <tr class="hover:bg-slate-50 border-b border-gray-100 transition-colors">
+                    <td class="px-4 py-3 text-xs text-gray-700 italic font-medium">"${q.kutipan}"</td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="hapusQuote(${q.id})" class="text-red-400 hover:text-red-600 hover:bg-red-50 w-8 h-8 rounded-full transition-all shadow-sm border border-transparent hover:border-red-100" title="Hapus Kutipan">
+                            <i class="fas fa-trash-alt text-[10px]"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = htmlRows;
+
+    } catch (err) {
+        console.error("Gagal memuat quotes:", err);
+        tbody.innerHTML = `<tr><td colspan="2" class="text-center py-4 text-red-500 font-medium">Gagal memuat data (${err.message})</td></tr>`;
+    }
+}
+
+async function tambahQuoteBaru() {
+    const inputEl = document.getElementById('input-quote-baru');
+    const kutipan = inputEl.value.trim();
+    const btn = document.getElementById('btn-tambah-quote');
+
+    if (!kutipan) return showToast('Kutipan tidak boleh kosong!', true);
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+    btn.disabled = true;
+
+    try {
+        const { error } = await db.from('tabel_quotes').insert([{ kutipan: kutipan }]);
+        if (error) throw error;
+
+        showToast('Kutipan berhasil ditambahkan!');
+        inputEl.value = ''; // Bersihkan input
+        loadDataQuotes(); // Segarkan tabel
+
+    } catch (err) {
+        console.error("Gagal tambah quote:", err);
+        showToast("Gagal menyimpan kutipan. Cek koneksi/RLS.", true);
+    } finally {
+        btn.innerHTML = '<i class="fas fa-plus"></i> Tambah ke Bank';
+        btn.disabled = false;
+    }
+}
+
+async function hapusQuote(id) {
+    if (!confirm('Hapus kutipan ini dari perputaran harian dasbor siswa?')) return;
+
+    try {
+        const { error } = await db.from('tabel_quotes').delete().eq('id', id);
+        if (error) throw error;
+
+        showToast('Kutipan berhasil dihapus!');
+        loadDataQuotes();
+    } catch (err) {
+        console.error("Gagal menghapus quote:", err);
+        showToast("Gagal menghapus. Cek koneksi jaringan Anda.", true);
     }
 }
