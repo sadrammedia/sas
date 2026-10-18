@@ -1263,44 +1263,46 @@ async function simpanPengaturan() {
     }
 }
 
-const editFotoGuruFileEl = document.getElementById('edit-foto-guru-file');
-if (editFotoGuruFileEl) {
-    editFotoGuruFileEl.addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        // PERBAIKAN: Izinkan guru DAN admin untuk ganti foto
-        if (!file || !currentUser || (currentUser.role !== 'guru' && currentUser.role !== 'admin')) return;
+// ==========================================
+// FUNGSI UNGGAH FOTO PROFIL GURU (INLINE TRIGGER)
+// ==========================================
+async function unggahFotoProfilGuru(event) {
+    const file = event.target.files[0];
+    // Izinkan guru DAN admin untuk ganti foto
+    if (!file || !currentUser || (currentUser.role !== 'guru' && currentUser.role !== 'admin')) return;
+    
+    const statusEl = document.getElementById('status-foto-guru-upload');
+    statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah foto...';
+    statusEl.className = 'text-xs text-teal-600 mt-1 font-bold';
+
+    try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `profil_guru_${currentUser.nip}_${Date.now()}.${fileExt}`;
+        const publicUrl = await uploadFileToSupabase(file, 'foto_profil', fileName);
         
-        const statusEl = document.getElementById('status-foto-guru-upload');
-        statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah foto...';
-        statusEl.className = 'text-xs text-teal-600 mt-1 font-bold';
+        document.getElementById('edit-foto-guru-url').value = publicUrl;
+        
+        // Memperbarui UI pratinjau secara instan
+        document.getElementById('edit-preview-foto-guru').style.display = 'block';
+        document.getElementById('edit-preview-foto-guru').src = publicUrl;
+        document.getElementById('edit-preview-foto-guru').classList.remove('hidden');
+        
+        document.getElementById('edit-icon-guru').style.display = 'none';
+        document.getElementById('edit-icon-guru').classList.add('hidden');
 
-        try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `profil_guru_${currentUser.nip}_${Date.now()}.${fileExt}`;
-            const publicUrl = await uploadFileToSupabase(file, 'foto_profil', fileName);
-            
-            document.getElementById('edit-foto-guru-url').value = publicUrl;
-            
-            document.getElementById('edit-preview-foto-guru').style.display = 'block';
-            document.getElementById('edit-preview-foto-guru').src = publicUrl;
-            document.getElementById('edit-preview-foto-guru').classList.remove('hidden');
-            
-            document.getElementById('edit-icon-guru').style.display = 'none';
-            document.getElementById('edit-icon-guru').classList.add('hidden');
-
-            statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil diunggah (Jangan lupa klik Simpan)';
-            statusEl.className = 'text-xs text-green-600 mt-1 font-bold';
-        } catch (error) {
-            let errorMsg = 'Gagal unggah foto.';
-            if (error.message && error.message.includes('row-level security')) {
-               errorMsg = 'Akses ditolak. Cek RLS Policy Storage.';
-            }
-            statusEl.innerHTML = `<i class="fas fa-times-circle"></i> ${errorMsg}`;
-            statusEl.className = 'text-xs text-red-500 mt-1 font-bold';
-            console.error(error);
+        statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil diunggah (Jangan lupa klik Simpan)';
+        statusEl.className = 'text-xs text-green-600 mt-1 font-bold';
+    } catch (error) {
+        let errorMsg = 'Gagal unggah foto.';
+        if (error.message && error.message.includes('row-level security')) {
+           errorMsg = 'Akses ditolak. Cek RLS Policy Storage.';
         }
-    });
+        statusEl.innerHTML = `<i class="fas fa-times-circle"></i> ${errorMsg}`;
+        statusEl.className = 'text-xs text-red-500 mt-1 font-bold';
+        console.error(error);
+    }
 }
+
 
 function loadProfilGuru() {
     if (!currentUser) return;
