@@ -853,15 +853,37 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- FITUR BARU: Background Siswa -->
+                        <!-- FITUR BARU: Pengaturan Dinamis Beranda Siswa -->
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Background Dasbor Siswa</label>
-                            <div class="flex gap-3 items-center">
-                                <img id="preview-bg-siswa-setting" src="" class="w-16 h-12 rounded-lg border border-gray-200 object-cover hidden">
-                                <div class="flex-1">
-                                    <input type="file" id="set-bg-siswa-file" accept="image/*" class="w-full text-[10px] text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer" onchange="handleTampilanUpload('set-bg-siswa-file', 'status-bg-siswa-upload', 'set-bg-siswa-url', 'preview-bg-siswa-setting')">
-                                    <input type="hidden" id="set-bg-siswa-url">
-                                    <p class="text-[9px] text-gray-400 mt-1" id="status-bg-siswa-upload">Muncul di header siswa</p>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Tema Beranda Siswa</label>
+                            <select id="set-bg-siswa-tipe" onchange="toggleTipeBgSiswa()" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-[11px] outline-none focus:border-teal-500 bg-gray-50/50 mb-2 font-bold text-gray-700">
+                                <option value="default">Bawaan (Biru-Ungu)</option>
+                                <option value="gambar">Unggah Gambar</option>
+                                <option value="gradasi">Pilih Warna Gradasi</option>
+                            </select>
+
+                            <!-- Mode 1: Unggah Gambar -->
+                            <div id="wrap-bg-siswa-gambar" class="hidden animate-fade-in">
+                                <div class="flex gap-2 items-center">
+                                    <img id="preview-bg-siswa-setting" src="" class="w-10 h-10 rounded-lg border border-gray-200 object-cover hidden">
+                                    <div class="flex-1 min-w-0">
+                                        <input type="file" id="set-bg-siswa-file" accept="image/*" class="w-full text-[9px] text-gray-500 file:mr-1 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[9px] file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer" onchange="handleTampilanUpload('set-bg-siswa-file', 'status-bg-siswa-upload', 'set-bg-siswa-url', 'preview-bg-siswa-setting')">
+                                        <input type="hidden" id="set-bg-siswa-url">
+                                        <p class="text-[9px] text-gray-400 mt-1" id="status-bg-siswa-upload">Pilih file max 2MB</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mode 2: Preset Gradasi -->
+                            <div id="wrap-bg-siswa-gradasi" class="hidden animate-fade-in">
+                                <input type="hidden" id="set-bg-siswa-gradient" value="">
+                                <div class="grid grid-cols-3 gap-2 mt-1">
+                                    <button type="button" onclick="pilihGradientSiswa('from-emerald-500 to-teal-700')" class="h-7 rounded-md bg-gradient-to-br from-emerald-500 to-teal-700 border-2 border-transparent transition-all btn-gradasi-preset shadow-sm" data-val="from-emerald-500 to-teal-700" title="Emerald"></button>
+                                    <button type="button" onclick="pilihGradientSiswa('from-amber-500 to-orange-700')" class="h-7 rounded-md bg-gradient-to-br from-amber-500 to-orange-700 border-2 border-transparent transition-all btn-gradasi-preset shadow-sm" data-val="from-amber-500 to-orange-700" title="Sunset"></button>
+                                    <button type="button" onclick="pilihGradientSiswa('from-slate-700 to-slate-900')" class="h-7 rounded-md bg-gradient-to-br from-slate-700 to-slate-900 border-2 border-transparent transition-all btn-gradasi-preset shadow-sm" data-val="from-slate-700 to-slate-900" title="Midnight"></button>
+                                    <button type="button" onclick="pilihGradientSiswa('from-rose-500 to-pink-700')" class="h-7 rounded-md bg-gradient-to-br from-rose-500 to-pink-700 border-2 border-transparent transition-all btn-gradasi-preset shadow-sm" data-val="from-rose-500 to-pink-700" title="Rose"></button>
+                                    <button type="button" onclick="pilihGradientSiswa('from-cyan-500 to-blue-700')" class="h-7 rounded-md bg-gradient-to-br from-cyan-500 to-blue-700 border-2 border-transparent transition-all btn-gradasi-preset shadow-sm" data-val="from-cyan-500 to-blue-700" title="Ocean"></button>
+                                    <button type="button" onclick="pilihGradientSiswa('from-fuchsia-600 to-purple-800')" class="h-7 rounded-md bg-gradient-to-br from-fuchsia-600 to-purple-800 border-2 border-transparent transition-all btn-gradasi-preset shadow-sm" data-val="from-fuchsia-600 to-purple-800" title="Fuchsia"></button>
                                 </div>
                             </div>
                         </div>
