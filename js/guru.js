@@ -219,18 +219,51 @@ async function loadDashboardGuruData() {
     else if(jam >= 15 && jam < 18) sapaan = 'Selamat Sore';
     else if(jam >= 18) sapaan = 'Selamat Malam';
     
-    // Kata Mutiara Acak
-    const quotes = [
-        "Pendidikan adalah paspor untuk masa depan.",
-        "Guru yang baik itu seperti lilin, rela membakar dirinya untuk menerangi orang lain.",
-        "Bukan tentang seberapa pintar mereka, tapi seberapa besar kita peduli.",
-        "Satu buku, satu pena, dan satu guru dapat mengubah dunia.",
-        "Mengajar adalah belajar dua kali."
-    ];
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-
+    // 1. SET SAPAAN NAMA
     document.getElementById('dash-guru-greeting').innerText = `${sapaan}, ${currentUser.nama.split(' ')[0]}!`;
-    document.getElementById('dash-guru-quote').innerText = `"${randomQuote}"`;
+    
+    // 2. SET LENCANA PERAN (ROLE/JABATAN)
+    const roleEl = document.getElementById('dash-guru-role');
+    if (roleEl) {
+        if (currentUser.role === 'admin') {
+            roleEl.innerText = "Administrator";
+            roleEl.className = "text-[9px] bg-rose-50 text-rose-600 font-bold px-1.5 py-0.5 rounded border border-rose-100 inline-block w-fit mb-1";
+        } else {
+            roleEl.innerText = currentUser.jabatan || "Pengajar";
+            roleEl.className = "text-[9px] bg-teal-50 text-teal-600 font-bold px-1.5 py-0.5 rounded border border-teal-100 inline-block w-fit mb-1";
+        }
+    }
+
+    // 3. TAMPILKAN FOTO PROFIL DI DASHBOARD
+    const dashImg = document.getElementById('dash-guru-foto');
+    const dashIco = document.getElementById('dash-guru-icon');
+    if (dashImg && dashIco) {
+        if (currentUser.foto_profil) {
+            dashImg.src = currentUser.foto_profil;
+            dashImg.style.display = 'block';
+            dashImg.classList.remove('hidden');
+            dashIco.style.display = 'none';
+        } else {
+            dashImg.style.display = 'none';
+            dashIco.style.display = 'block';
+        }
+    }
+
+    // 4. TARIK QUOTES GURU DARI DATABASE (Menggantikan Array Manual)
+    const quoteEl = document.getElementById('dash-guru-quote');
+    try {
+        const { data: quotesGuruData, error: errQ } = await db.from('tabel_quotes_guru').select('kutipan');
+        if (!errQ && quotesGuruData && quotesGuruData.length > 0) {
+            const dayOfYear = Math.floor((dateObj - new Date(yyyy, 0, 0)) / 1000 / 60 / 60 / 24);
+            const index = dayOfYear % quotesGuruData.length;
+            quoteEl.innerText = `"${quotesGuruData[index].kutipan}"`;
+        } else {
+            quoteEl.innerText = `"Pendidikan adalah paspor untuk masa depan."`;
+        }
+    } catch(e) { 
+        console.error("Gagal menarik quotes guru:", e); 
+        quoteEl.innerText = `"Mengajar adalah belajar dua kali."`;
+    }
 
     // Ambil Batas Jam Masuk untuk Deteksi Terlambat
     let batasJamMasuk = '07:15';
@@ -2388,4 +2421,93 @@ function pilihGradientSiswa(val) {
             btn.classList.add('border-transparent');
         }
     });
+}
+
+
+// ==========================================
+// 12. MANAJEMEN BANK QUOTES GURU
+// ==========================================
+
+// Pemicu dimodifikasi agar memuat kedua tabel sekaligus
+if (typeof originalSwitchTabPengaturan === 'function') {
+    window.switchTabPengaturan = function(tabId) {
+        originalSwitchTabPengaturan(tabId);
+        if (tabId === 'fitur') {
+            loadDataQuotes();       // Tabel Siswa
+            loadDataQuotesGuru();   // Tabel Guru
+        }
+    };
+}
+
+async function loadDataQuotesGuru() {
+    const tbody = document.getElementById('tabel-data-quotes-guru');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-gray-400 text-xs"><i class="fas fa-spinner fa-spin mr-1"></i> Menarik kutipan...</td></tr>';
+
+    try {
+        const { data, error } = await db.from('tabel_quotes_guru').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-gray-400 text-xs">Belum ada kutipan guru.</td></tr>';
+            return;
+        }
+
+        let htmlRows = '';
+        data.forEach(q => {
+            htmlRows += `
+                <tr class="hover:bg-slate-50 border-b border-gray-100 transition-colors">
+                    <td class="px-3 py-2 text-[11px] text-gray-700 italic font-medium whitespace-normal leading-tight">"${q.kutipan}"</td>
+                    <td class="px-3 py-2 text-center align-top">
+                        <button onclick="hapusQuoteGuru(${q.id})" class="text-red-400 hover:text-red-600 bg-white hover:bg-red-50 w-7 h-7 rounded-full transition-all shadow-sm border border-gray-100 hover:border-red-100" title="Hapus">
+                            <i class="fas fa-trash-alt text-[10px]"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = htmlRows;
+    } catch (err) {
+        console.error("Gagal memuat quotes guru:", err);
+        tbody.innerHTML = `<tr><td colspan="2" class="text-center py-4 text-red-500 text-xs">Gagal: ${err.message}</td></tr>`;
+    }
+}
+
+async function tambahQuoteGuruBaru() {
+    const inputEl = document.getElementById('input-quote-guru-baru');
+    const kutipan = inputEl.value.trim();
+    const btn = document.getElementById('btn-tambah-quote-guru');
+
+    if (!kutipan) return showToast('Kutipan guru tidak boleh kosong!', true);
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+    btn.disabled = true;
+
+    try {
+        const { error } = await db.from('tabel_quotes_guru').insert([{ kutipan: kutipan }]);
+        if (error) throw error;
+        showToast('Kutipan guru berhasil ditambahkan!');
+        inputEl.value = ''; 
+        loadDataQuotesGuru(); 
+    } catch (err) {
+        console.error("Gagal tambah quote guru:", err);
+        showToast("Gagal menyimpan kutipan guru.", true);
+    } finally {
+        btn.innerHTML = '<i class="fas fa-plus"></i> Tambah ke Bank';
+        btn.disabled = false;
+    }
+}
+
+async function hapusQuoteGuru(id) {
+    if (!confirm('Hapus kutipan ini dari dasbor guru?')) return;
+    try {
+        const { error } = await db.from('tabel_quotes_guru').delete().eq('id', id);
+        if (error) throw error;
+        showToast('Kutipan guru berhasil dihapus!');
+        loadDataQuotesGuru();
+    } catch (err) {
+        console.error("Gagal hapus quote guru:", err);
+        showToast("Gagal menghapus.", true);
+    }
 }
