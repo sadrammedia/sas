@@ -2092,7 +2092,7 @@ window.toggleDarkModeGuruQuick = function() {
         // Fallback langsung jika belum terikat
         const root = document.documentElement;
         const body = document.body;
-        const container = document.getElementById('app-container');
+        const container = document.getElementById('app-container');       
         if (newState) {
             root.classList.add('dark', 'dark-mode-simulated');
             body.classList.add('dark', 'dark-mode-simulated');
@@ -2100,12 +2100,13 @@ window.toggleDarkModeGuruQuick = function() {
             localStorage.setItem('pref_dark_mode', 'true');
         } else {
             root.classList.remove('dark', 'dark-mode-simulated');
-            body.classList.remove('dark-mode-simulated');
+            
+            // PERBAIKAN BUG UTAMA: Menghapus class 'dark' dari body
+            body.classList.remove('dark', 'dark-mode-simulated');            
             if (container) container.classList.remove('dark-mode-simulated');
             localStorage.setItem('pref_dark_mode', 'false');
         }
     }
-
     syncDarkModeGuruUI(newState);
 };
 
