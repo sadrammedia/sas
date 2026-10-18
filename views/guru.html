@@ -68,13 +68,15 @@
             </p>
         </div>
         <div class="flex items-center gap-2">
+                <!-- Tombol Mode Gelap -->
                 <button type="button" onclick="window.toggleDarkModeGuruQuick()" class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 active:scale-95 transition-all border border-indigo-100/70 shadow-sm cursor-pointer select-none" title="Beralih Tema">
                     <i class="fas fa-moon text-xs pointer-events-none" id="icon-dark-guru-quick"></i>
-                </button>
-                <button type="button" onclick="switchGuruMenu('profil-guru')" class="w-8 h-8 rounded-xl bg-gray-50 text-gray-600 flex items-center justify-center overflow-hidden border border-gray-200 shadow-sm active:scale-95 transition-transform relative">
-                    <img id="guru-foto-topmob" src="" onerror="this.style.display='none'; document.getElementById('guru-icon-topmob').style.display='block';" class="absolute inset-0 w-full h-full object-cover z-10 hidden">
-                    <i id="guru-icon-topmob" class="fas fa-user text-xs"></i>
-                </button>
+                </button>                
+                <!-- PERUBAHAN: Tombol Refresh Pindah ke Sini -->
+                <button type="button" onclick="loadDashboardGuruData()" class="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 hover:bg-teal-100 flex items-center justify-center border border-teal-100 shadow-sm active:scale-95 transition-transform" title="Segarkan Data">
+                    <i class="fas fa-sync-alt text-xs" id="icon-spin-refresh"></i>
+                </button>               
+                <!-- Tombol Keluar -->
                 <button type="button" onclick="handleLogout()" class="w-8 h-8 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center border border-red-100 shadow-sm active:scale-95 transition-transform" title="Keluar">
                     <i class="fas fa-sign-out-alt text-xs"></i>
                 </button>
@@ -88,12 +90,11 @@
             <!-- DESAIN BARU: Profil Header Guru -->
             <div class="flex justify-between items-start mb-5 px-1 mt-2">
                 <div class="flex items-center gap-3">
-                    <!-- Foto Profil Guru (Kotak Melengkung seperti Siswa) -->
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl p-0.5 bg-white border border-gray-200 shadow-sm flex items-center justify-center relative shrink-0 overflow-hidden">
+                    <!-- PERUBAHAN: Foto Profil Kini Bisa Diklik -->
+                    <div onclick="switchGuruMenu('profil-guru')" class="w-12 h-12 md:w-14 md:h-14 rounded-2xl p-0.5 bg-white border border-gray-200 shadow-sm flex items-center justify-center relative shrink-0 overflow-hidden cursor-pointer hover:scale-105 transition-transform" title="Buka Pengaturan Akun">
                         <img id="dash-guru-foto" src="" onerror="this.style.display='none'; document.getElementById('dash-guru-icon').style.display='block';" class="absolute inset-0 w-full h-full object-cover z-10 hidden">
                         <i id="dash-guru-icon" class="fas fa-user-tie text-gray-400 text-xl"></i>
-                    </div>
-                    
+                    </div>                    
                     <!-- Sapaan & Kutipan -->
                     <div class="min-w-0 flex flex-col justify-center">
                         <h2 class="text-lg md:text-xl font-extrabold text-gray-800 tracking-tight leading-none mb-0.5" id="dash-guru-greeting">Selamat Pagi!</h2>
@@ -101,11 +102,6 @@
                         <p class="text-[10px] md:text-[11px] text-gray-500 font-medium leading-tight italic line-clamp-2" id="dash-guru-quote">"Memuat kata mutiara..."</p>
                     </div>
                 </div>
-
-                <!-- Tombol Refresh (Desain Ikon Bulat Kecil di Kanan Atas) -->
-                <button type="button" onclick="loadDashboardGuruData()" class="w-8 h-8 rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 flex items-center justify-center shadow-sm transition-all shrink-0 ml-2" title="Segarkan Data">
-                    <i class="fas fa-sync-alt text-xs" id="icon-spin-refresh"></i>
-                </button>
             </div>
 
             <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl p-4 text-white shadow-md mb-5 relative overflow-hidden">
