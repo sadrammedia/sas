@@ -1089,7 +1089,9 @@ async function loadPengaturan() {
             // --- KODE BARU UNTUK LOAD TEMA SISWA ---
             document.getElementById('set-bg-siswa-tipe').value = data.bg_siswa_tipe || 'default';
             toggleTipeBgSiswa(); // Panggil fungsi agar UI menyesuaikan
-            
+            // Jika bg_siswa_overlay bernilai false, matikan sakelar. Jika tidak ada/true, nyalakan.
+            document.getElementById('set-bg-siswa-overlay').checked = data.bg_siswa_overlay !== false;
+
             document.getElementById('set-bg-siswa-gradient').value = data.bg_siswa_gradient || '';
             if (data.bg_siswa_gradient) {
                 pilihGradientSiswa(data.bg_siswa_gradient);
@@ -1204,6 +1206,7 @@ async function simpanPengaturan() {
             bg_siswa_tipe: document.getElementById('set-bg-siswa-tipe').value,
             bg_siswa_gradient: document.getElementById('set-bg-siswa-gradient').value,
             bg_siswa_url: document.getElementById('set-bg-siswa-url').value,
+            bg_siswa_overlay: document.getElementById('set-bg-siswa-overlay').checked,
             
             akses_guru_jadwal: document.getElementById('set-akses-jadwal').checked,
             akses_guru_kelas: document.getElementById('set-akses-kelas').checked,
