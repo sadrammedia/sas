@@ -249,13 +249,18 @@ async function loadDashboardGuruData() {
         }
     }
 
-    // 4. TARIK QUOTES GURU DARI DATABASE (Menggantikan Array Manual)
+    // 4. TARIK QUOTES GURU DARI DATABASE (Formula 1 Hari 1 Kali Berganti)
     const quoteEl = document.getElementById('dash-guru-quote');
     try {
         const { data: quotesGuruData, error: errQ } = await db.from('tabel_quotes_guru').select('kutipan');
         if (!errQ && quotesGuruData && quotesGuruData.length > 0) {
-            const dayOfYear = Math.floor((dateObj - new Date(yyyy, 0, 0)) / 1000 / 60 / 60 / 24);
-            const index = dayOfYear % quotesGuruData.length;
+            // Hitung nomor hari mutlak dari tahun 1970 agar tidak pernah tersangkut
+            const oneDay = 1000 * 60 * 60 * 24;
+            const absoluteDay = Math.floor(dateObj.getTime() / oneDay);
+            
+            // Bagi dengan jumlah baris data (20 baris) untuk menentukan indeks hari ini
+            const index = absoluteDay % quotesGuruData.length;
+            
             quoteEl.innerText = `"${quotesGuruData[index].kutipan}"`;
         } else {
             quoteEl.innerText = `"Pendidikan adalah paspor untuk masa depan."`;
@@ -264,7 +269,7 @@ async function loadDashboardGuruData() {
         console.error("Gagal menarik quotes guru:", e); 
         quoteEl.innerText = `"Mengajar adalah belajar dua kali."`;
     }
-
+    
     // Ambil Batas Jam Masuk untuk Deteksi Terlambat
     let batasJamMasuk = '07:15';
     if(cachedPengaturan && cachedPengaturan.jam_masuk_akhir) {
